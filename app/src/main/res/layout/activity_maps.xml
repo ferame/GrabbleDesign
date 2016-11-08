@@ -25,7 +25,8 @@ tools:context=".MainActivity" >
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Settings"
-            android:background="@color/yellow">
+            android:background="@color/yellow"
+            android:textSize="16sp">
         </Button>
         <Button
             android:id="@+id/toInventory"
@@ -33,7 +34,8 @@ tools:context=".MainActivity" >
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Inventory"
-            android:background="@color/cyan">
+            android:background="@color/cyan"
+            android:textSize="16sp">
         </Button>
         <Button
             android:id="@+id/toWordInput"
@@ -41,7 +43,8 @@ tools:context=".MainActivity" >
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Write"
-            android:background="@color/red">
+            android:background="@color/red"
+            android:textSize="16sp">
         </Button>
     </LinearLayout>
 </RelativeLayout>

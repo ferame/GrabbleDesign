@@ -31,7 +31,7 @@
         <EditText
             android:layout_width="355dp"
             android:layout_height="wrap_content"
-            android:hint="hint" />
+            android:hint="Enter Word Here" />
     </android.support.design.widget.TextInputLayout>
 
     <Button
