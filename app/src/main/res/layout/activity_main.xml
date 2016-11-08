@@ -11,22 +11,13 @@
     tools:context="com.code.justin.grabbledesign.MainActivity">
 
     <Button
-        android:text="Go to Maps"
+        android:text="GO TO CHANGE PASSWORD"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="toChangePassActivity"
+        android:id="@+id/toChangePass"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/toMaps"
-        android:onClick="toMapsActivity" />
-
-    <Button
-        android:text="Go to Login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/toMaps"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/toLogin"
-        android:onClick="toLoginActivity" />
+        android:layout_alignParentStart="true" />
 
     <Button
         android:text="Go to account creation"
@@ -34,6 +25,45 @@
         android:layout_height="wrap_content"
         android:id="@+id/toCreateAccount"
         android:onClick="toCreateAccountActivity"
-        android:layout_below="@+id/toLogin"
-        android:layout_alignParentEnd="true" />
+        android:layout_below="@+id/toChangePass"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:text="GO TO INVENTORY"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="toInventoryActivity"
+        android:id="@+id/toInventory"
+        android:layout_below="@+id/toCreateAccount"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:text="Go to Login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/toLogin"
+        android:onClick="toLoginActivity"
+        android:layout_below="@+id/toInventory"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:text="GO TO RECOVERY"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="toRecoveryActivity"
+        android:id="@+id/toRecovery"
+        android:layout_below="@+id/toMaps"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:text="Go to Maps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/toMaps"
+        android:onClick="toMapsActivity"
+        android:layout_below="@+id/toInventory"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="46dp" />
+
+
 </RelativeLayout>

@@ -13,8 +13,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-    public void toMapsActivity(View view){
-        Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+    public void toChangePassActivity(View view){
+        Intent intent = new Intent(getApplicationContext(), ChangePassActivity.class);
+        startActivity(intent);
+    }
+
+    public void toCreateAccountActivity(View view){
+        Intent intent = new Intent(getApplicationContext(), CreateAccountActivity.class);
+        startActivity(intent);
+    }
+
+    public void toInventoryActivity(View view){
+        Intent intent = new Intent(getApplicationContext(), InventoryActivity.class);
         startActivity(intent);
     }
 
@@ -23,9 +33,17 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void toCreateAccountActivity(View view){
-        Intent intent = new Intent(getApplicationContext(), CreateAccountActivity.class);
+    public void toMapsActivity(View view){
+        Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
         startActivity(intent);
     }
+
+    public void toRecoveryActivity(View view){
+        Intent intent = new Intent(getApplicationContext(), RecoveryActivity.class);
+        startActivity(intent);
+    }
+
+
+
 
 }
