@@ -5,9 +5,14 @@
     <color name="colorAccent">#FF4081</color>
     <color name="teal">#009688</color>
     <color name="cyan">#00BCD4</color>
+    <color name="cyan700">#0097A7</color>
+    <color name="cyan800">#00838F</color>
+    <color name="cyan900">#006064</color>
     <color name="deepOrange">#FF5722</color>
     <color name="yellow">#FFEB3B</color>
     <color name="yellowBackground">#FFFDE7</color>
     <color name="pink">#E91E63</color>
     <color name="red">#F44336</color>
+    <color name="redDark">#E53935</color>
+    <color name="grey">#9E9E9E</color>
 </resources>
