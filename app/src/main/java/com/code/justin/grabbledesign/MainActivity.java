@@ -18,4 +18,14 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void toLoginActivity(View view){
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(intent);
+    }
+
+    public void toCreateAccountActivity(View view){
+        Intent intent = new Intent(getApplicationContext(), CreateAccountActivity.class);
+        startActivity(intent);
+    }
+
 }

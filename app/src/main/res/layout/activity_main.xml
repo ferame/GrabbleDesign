@@ -18,4 +18,22 @@
         android:layout_alignParentEnd="true"
         android:id="@+id/toMaps"
         android:onClick="toMapsActivity" />
+
+    <Button
+        android:text="Go to Login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toMaps"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/toLogin"
+        android:onClick="toLoginActivity" />
+
+    <Button
+        android:text="Go to account creation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/toCreateAccount"
+        android:onClick="toCreateAccountActivity"
+        android:layout_below="@+id/toLogin"
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>
