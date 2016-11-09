@@ -20,6 +20,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.google.maps.android.kml.KmlLayer;
+import com.google.maps.android.kml.KmlPlacemark;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -29,16 +30,17 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -49,10 +51,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     LocationManager locationManager;
     LocationListener locationListener;
 
-    Marker userLoc;
     private KmlLayer letterLayer;
 
     private GoogleApiClient client;
+
+    private ArrayList<Marker> allMarkers = new ArrayList<>();
+    private ArrayList<Marker> usedMarkers = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +103,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
+                Log.i(TAG, "onLocationChanged");
+                findNearbyLetters(location);
                 //centerMapOnLocation(location, "Your Location");
             }
 
@@ -133,12 +139,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
                 Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-                LatLng userLocation = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
-                mMap.clear();
-
-                mMap.addMarker(new MarkerOptions().position(userLocation).title("Your Location"));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(userLocation));
+                if (lastKnownLocation != null) {
+                    LatLng userLocation = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(userLocation));
+                }
             }
         }
     }
@@ -171,9 +175,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         @Override
         protected void onPostExecute(KmlLayer kmlLayer) {
+            Log.i(TAG,"onPostExecute");
             super.onPostExecute(kmlLayer);
             try {
-                kmlLayer.addLayerToMap();
+                letterLayer = kmlLayer;
+                for (KmlPlacemark point : kmlLayer.getPlacemarks()) {
+                    String pointLetter = point.getProperty("description");
+                    String pointID = point.getProperty("name");
+                    String toMod = point.getGeometry().toString();
+                    Double pointLat = Double.parseDouble(toMod.split("\\(")[1].split(",")[0]);
+                    Double pointLng = Double.parseDouble(toMod.split(",")[1].split("\\)")[0]);
+                    Marker newMarker = mMap.addMarker(
+                            new MarkerOptions()
+                            .position(new LatLng(pointLat,pointLng))
+                            .title(pointLetter)
+                            .visible(false));
+                    newMarker.setTag(pointID);
+                    allMarkers.add(newMarker);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -204,16 +223,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    public void centerMapOnLocation(Location location, String title) {
-        Log.i(TAG, "centerMapOnLocation");
-        LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
-        if (userLoc != null) {
-            userLoc.remove();
-        }
-        userLoc = mMap.addMarker(new MarkerOptions().position(userLocation).title(title).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 20));
+    public void findNearbyLetters(Location userLocation) {
+        Log.i(TAG, "findNearbyLetters");
 
+        if(letterLayer != null){
+            if (letterLayer.getPlacemarks() != null){
+                Log.i(TAG,"checksPlacemarks");
+                for (Marker point : allMarkers){
+                    Location pointLoc = new Location("LetterLoc");
+                    pointLoc.setLongitude(point.getPosition().longitude);
+                    pointLoc.setLatitude(point.getPosition().latitude);
+                    if (userLocation.distanceTo(pointLoc) < 20){
+                        point.setVisible(true);
+                    }else{
+                        point.setVisible(false);
+                    }
+                }
+            }
+        }
     }
+
+    /*public static double checkDistance(double lat1, double lat2, double lon1, double lon2) {
+
+        final int R = 6371; // Radius of the earth
+        Double latDistance = Math.toRadians(lat2 - lat1);
+        Double lonDistance = Math.toRadians(lon2 - lon1);
+        Double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double distance = R * c * 1000; // convert to meters
+        return Math.sqrt(distance);
+    }*/
 
     public Action getIndexApiAction() {
         Thing object = new Thing.Builder()
