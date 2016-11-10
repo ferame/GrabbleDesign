@@ -29,7 +29,7 @@ tools:context=".MainActivity" >
             android:textSize="16sp">
         </Button>
         <Button
-            android:id="@+id/toInventory"
+            android:id="@+id/toWordInput"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

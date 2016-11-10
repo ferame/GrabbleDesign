@@ -29,11 +29,11 @@
         android:layout_alignParentStart="true" />
 
     <Button
-        android:text="GO TO INVENTORY"
+        android:text="GO TO WORD INPUT"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="toInventoryActivity"
-        android:id="@+id/toInventory"
+        android:onClick="toWordInputActivity"
+        android:id="@+id/toWordInput"
         android:layout_below="@+id/toCreateAccount"
         android:layout_alignParentStart="true" />
 
@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/toLogin"
         android:onClick="toLoginActivity"
-        android:layout_below="@+id/toInventory"
+        android:layout_below="@+id/toWordInput"
         android:layout_alignParentStart="true" />
 
     <Button
@@ -61,9 +61,18 @@
         android:layout_height="wrap_content"
         android:id="@+id/toMaps"
         android:onClick="toMapsActivity"
-        android:layout_below="@+id/toInventory"
+        android:layout_below="@+id/toWordInput"
         android:layout_alignParentStart="true"
         android:layout_marginTop="46dp" />
+
+    <Button
+        android:text="GO TO INVENTORY"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toRecovery"
+        android:layout_alignParentStart="true"
+        android:id="@+id/toInventory"
+        android:onClick="toInventoryActivity" />
 
 
 </RelativeLayout>

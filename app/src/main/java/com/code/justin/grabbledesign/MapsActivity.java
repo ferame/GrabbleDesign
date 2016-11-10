@@ -233,7 +233,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Location pointLoc = new Location("LetterLoc");
                     pointLoc.setLongitude(point.getPosition().longitude);
                     pointLoc.setLatitude(point.getPosition().latitude);
-                    if (userLocation.distanceTo(pointLoc) < 20){
+                    if (userLocation.distanceTo(pointLoc) < 50){
                         point.setVisible(true);
                     }else{
                         point.setVisible(false);

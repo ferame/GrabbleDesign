@@ -23,8 +23,8 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void toInventoryActivity(View view){
-        Intent intent = new Intent(getApplicationContext(), InventoryActivity.class);
+    public void toWordInputActivity(View view){
+        Intent intent = new Intent(getApplicationContext(), WordInputActivity.class);
         startActivity(intent);
     }
 
@@ -43,7 +43,8 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-
-
-
+    public void toInventoryActivity(View view){
+        Intent intent = new Intent(getApplicationContext(), InventoryActivity.class);
+        startActivity(intent);
+    }
 }
