@@ -71,7 +71,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMyLocationEnabled(true);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         try {
             // Customise the styling of the base map using a JSON object defined
             // in a raw resource file.
@@ -85,7 +85,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } catch (Resources.NotFoundException e) {
             Log.e("MapsActivityRaw", "Can't find style.", e);
         }
-
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        mMap.setMyLocationEnabled(true);
         DownloadTask task = new DownloadTask();
         KmlLayer returnedLayer = null;
         try {

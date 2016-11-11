@@ -47,4 +47,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), InventoryActivity.class);
         startActivity(intent);
     }
+
+    public void toSettingsActivity(View view){
+        Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+        startActivity(intent);
+    }
 }

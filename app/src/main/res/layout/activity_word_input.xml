@@ -68,7 +68,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="62dp"
                 android:text="W"
-                android:background="@drawable/keyboard_button_border"
+                android:background="@drawable/keyboard_button_border_disabled"
                 android:layout_weight="1">
             </Button>
             <Button
@@ -183,7 +183,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="62dp"
                 android:text="F"
-                android:background="@drawable/keyboard_button_border"
+                android:background="@drawable/keyboard_button_border_disabled"
                 android:layout_weight="1">
             </Button>
             <Button
@@ -274,7 +274,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="62dp"
                 android:text="C"
-                android:background="@drawable/keyboard_button_border"
+                android:background="@drawable/keyboard_button_border_disabled"
                 android:layout_weight="1">
             </Button>
             <Button
@@ -306,7 +306,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="62dp"
                 android:text="M"
-                android:background="@drawable/keyboard_button_border"
+                android:background="@drawable/keyboard_button_border_disabled"
                 android:layout_weight="1">
             </Button>
             <Button

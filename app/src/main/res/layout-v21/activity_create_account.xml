@@ -73,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Create"
-            android:background="@color/cyan"
+            android:background="#1DE9B6"
             android:textSize="16sp">
         </Button>
         <Button

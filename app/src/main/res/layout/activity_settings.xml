@@ -25,8 +25,9 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/settingsTitle"
+        android:id="@+id/settingsScrollView"
         android:paddingTop="10dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp">
@@ -34,6 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <Switch
                 android:text="Map Night Mode Disabled"
                 android:layout_width="match_parent"
@@ -53,22 +55,57 @@
                 android:textSize="16sp" />
 
             <Switch
-                android:text="Power Saving Mode"
+                android:text="Auto letter collection"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true"
                 android:id="@+id/switch3"
                 android:textSize="16sp" />
+            <Switch
+                android:text="Daily Super Letter"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:id="@+id/switch4"
+                android:textSize="16sp" />
         </LinearLayout>
     </ScrollView>
+    <HorizontalScrollView
+        android:id="@+id/imageScrollHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/settingsScrollView"
+        android:layout_above="@+id/split"
+        android:layout_alignParentStart="true">
+
+        <LinearLayout
+            android:id="@+id/imageScrollLinear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/img2"/>
+            <ImageView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/img1"/>
+            <ImageView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/img3"/>
+        </LinearLayout>
+    </HorizontalScrollView>
     <Button
         android:id="@+id/button2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Save changes"
-        android:background="@color/cyan"
+        android:text="DONE"
+        android:background="@color/redDark"
         android:layout_alignParentBottom="true"
         android:textSize="16sp">
     </Button>

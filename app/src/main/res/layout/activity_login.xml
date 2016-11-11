@@ -82,7 +82,7 @@
         android:layout_weight="2.90"
         android:text="Create Account"
         android:elevation="0dp"
-        android:background="@color/yellow"
+        android:background="#1DE9B6"
         android:layout_above="@+id/forgot"
         android:layout_alignParentStart="true"
         android:textSize="16sp">

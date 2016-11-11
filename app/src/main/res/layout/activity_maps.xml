@@ -25,16 +25,16 @@ tools:context=".MainActivity" >
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Settings"
-            android:background="@color/yellow"
+            android:background="@color/red"
             android:textSize="16sp">
         </Button>
         <Button
-            android:id="@+id/toWordInput"
+            android:id="@+id/toInventory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Inventory"
-            android:background="@color/cyan"
+            android:background="@color/teal700"
             android:textSize="16sp">
         </Button>
         <Button
@@ -43,7 +43,7 @@ tools:context=".MainActivity" >
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Write"
-            android:background="@color/red"
+            android:background="#00ACC1"
             android:textSize="16sp">
         </Button>
     </LinearLayout>
