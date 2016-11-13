@@ -70,6 +70,10 @@
                 android:layout_alignParentStart="true"
                 android:id="@+id/switch4"
                 android:textSize="16sp" />
+            <Button
+                android:text="Change Password"
+                android:layout_width="match_parent"
+                android:layout_height="48dp" />
         </LinearLayout>
     </ScrollView>
     <HorizontalScrollView
@@ -77,7 +81,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/settingsScrollView"
-        android:layout_above="@+id/split"
+        android:layout_above="@+id/button2"
         android:layout_alignParentStart="true">
 
         <LinearLayout
