@@ -10,7 +10,7 @@
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.code.justin.grabbledesign.LoginWithoutEmailRecovery">
+    tools:context="com.code.justin.grabbledesign.LoginActivity">
 
 <!-- Login progress -->
 <TextView
