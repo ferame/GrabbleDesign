@@ -3,6 +3,7 @@ package com.code.justin.grabbledesign;
 import android.*;
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Criteria;
@@ -18,6 +19,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.View;
 
 import com.google.maps.android.kml.KmlLayer;
 import com.google.maps.android.kml.KmlPlacemark;
@@ -287,5 +289,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
         client.disconnect();
+    }
+
+
+    public void toInventoryActivity(View view){
+        Intent intent = new Intent(getApplicationContext(), InventoryActivity.class);
+        startActivity(intent);
+    }
+
+    public void toSettingsActivity(View view){
+        Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+        startActivity(intent);
+    }
+
+    public void toWordInputActivity(View view){
+        Intent intent = new Intent(getApplicationContext(), WordInputActivity.class);
+        startActivity(intent);
     }
 }

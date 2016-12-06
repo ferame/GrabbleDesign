@@ -39,7 +39,7 @@
         android:textSize="18sp" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/SettingsDONE"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"

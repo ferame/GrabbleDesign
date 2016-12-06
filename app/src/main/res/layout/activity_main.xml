@@ -10,11 +10,11 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.code.justin.grabbledesign.MainActivity">
 
-    <Button
+    <!--<Button
         android:text="GO TO CHANGE PASSWORD"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="toChangePassActivity"
+        android:onClick="toChangePassActivity (MainActivity)"
         android:id="@+id/toChangePass"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
@@ -81,10 +81,10 @@
         android:layout_below="@+id/toInventory"
         android:layout_alignParentStart="true"
         android:id="@+id/toSettings"
-        android:onClick="toSettingsActivity" />
+        android:onClick="toSettingsActivity" />-->
 
     <Button
-        android:text="GO TO SETTINGS"
+        android:text="GO TO LOGIN WITHOUT EMAIL"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/toSettings"

@@ -74,7 +74,8 @@
             android:layout_weight="1"
             android:text="Create"
             android:background="#1DE9B6"
-            android:textSize="16sp">
+            android:textSize="16sp"
+            android:onClick="toLoginActivity (CreateAccountActivity)">
         </Button>
         <Button
             android:id="@+id/Button03"
@@ -83,7 +84,8 @@
             android:layout_weight="1"
             android:text="Cancel"
             android:background="@color/red"
-            android:textSize="16sp">
+            android:textSize="16sp"
+            android:onClick="toLoginActivity (CreateAccountActivity)">
         </Button>
     </LinearLayout>
 

@@ -26,7 +26,8 @@ tools:context=".MainActivity" >
             android:layout_weight="1"
             android:text="Settings"
             android:background="@color/red"
-            android:textSize="16sp">
+            android:textSize="16sp"
+            android:onClick="toSettingsActivity">
         </Button>
         <Button
             android:id="@+id/toInventory"
@@ -35,7 +36,8 @@ tools:context=".MainActivity" >
             android:layout_weight="1"
             android:text="Inventory"
             android:background="@color/teal700"
-            android:textSize="16sp">
+            android:textSize="16sp"
+            android:onClick="toInventoryActivity">
         </Button>
         <Button
             android:id="@+id/toWordInput"
@@ -44,7 +46,8 @@ tools:context=".MainActivity" >
             android:layout_weight="1"
             android:text="Write"
             android:background="#00ACC1"
-            android:textSize="16sp">
+            android:textSize="16sp"
+            android:onClick="toWordInputActivity">
         </Button>
     </LinearLayout>
 </RelativeLayout>
