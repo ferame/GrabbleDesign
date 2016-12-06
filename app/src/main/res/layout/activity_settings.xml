@@ -25,12 +25,13 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_below="@+id/settingsTitle"
         android:id="@+id/settingsScrollView"
         android:paddingTop="10dp"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp">
+        android:paddingRight="16dp"
+        android:clipToPadding="false"
+        android:layout_height="190dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -70,6 +71,26 @@
                 android:layout_alignParentStart="true"
                 android:id="@+id/switch4"
                 android:textSize="16sp" />
+            <LinearLayout
+                android:id="@+id/mapsButtons"
+                android:layout_height="48dp"
+                android:layout_width="fill_parent"
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Visibility Radius"
+                    android:layout_weight="1"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"/>
+                <SeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:max="70"
+                    android:progress="10"
+                    android:layout_weight="1"/>
+            </LinearLayout>
             <Button
                 android:text="Change Password"
                 android:layout_width="match_parent"
@@ -90,15 +111,15 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <ImageView
-                android:layout_width="170dp"
+                android:layout_width="160dp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/img2"/>
             <ImageView
-                android:layout_width="170dp"
+                android:layout_width="160dp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/img1"/>
             <ImageView
-                android:layout_width="170dp"
+                android:layout_width="160dp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/img3"/>
         </LinearLayout>

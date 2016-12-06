@@ -52,4 +52,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
         startActivity(intent);
     }
+
+    public void toLoginActivityWithoutEmail(View view){
+        Intent intent = new Intent(getApplicationContext(), LoginWithoutEmailRecovery.class);
+        startActivity(intent);
+    }
 }

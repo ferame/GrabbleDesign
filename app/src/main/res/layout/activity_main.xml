@@ -83,5 +83,13 @@
         android:id="@+id/toSettings"
         android:onClick="toSettingsActivity" />
 
+    <Button
+        android:text="GO TO SETTINGS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toSettings"
+        android:layout_alignParentStart="true"
+        android:id="@+id/toLoginWithoutEmail"
+        android:onClick="toLoginActivityWithoutEmail" />
 
 </RelativeLayout>
