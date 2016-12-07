@@ -10,7 +10,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login_without_email_recovery);
+        setContentView(R.layout.activity_login);
     }
 
     public void toMapsActivity (View view){
