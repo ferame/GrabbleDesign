@@ -15,6 +15,36 @@ import static android.app.PendingIntent.getActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
+    public class SubmittedUser {
+
+        private boolean allowed;
+        private int id;
+
+        public SubmittedUser(boolean allowed, int id) {
+            this.allowed = allowed;
+            this.id = id;
+        }
+
+        public boolean getAllowed() {
+            return allowed;
+        }
+
+        public void setAllowed(boolean allowed) {
+            this.allowed = allowed;
+        }
+
+        public int getId() {
+            return this.id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+    }
+
+
+    SubmittedUser tryingToAccess = new SubmittedUser(false, -1);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,8 +53,7 @@ public class LoginActivity extends AppCompatActivity {
         //Database Initialisation
         try{
             SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
-            userData.execSQL("CREATE TABLE IF NOT EXISTS accounts (nickname VARCHAR(20), email VARCHAR(20) PRIMARY KEY, password VARCHAR(20))");
-            Log.i("What is happening here", "SOME SHIT");
+            userData.execSQL("CREATE TABLE IF NOT EXISTS accounts (nickname VARCHAR(20), email VARCHAR(20), password VARCHAR(20), id INTEGER PRIMARY KEY)");
             userData.execSQL("DELETE FROM accounts");
             userData.execSQL("INSERT INTO accounts (nickname, email, password) VALUES ('ferame', 'alisauskas.j@gmail.com', 'somepass')");
             userData.execSQL("INSERT INTO accounts (nickname, email, password) VALUES ('darakan', 'justinas.ali@zebra.lt', 'somepass2')");
@@ -33,11 +62,13 @@ public class LoginActivity extends AppCompatActivity {
             int nameIndex = c.getColumnIndex("nickname");
             int emailIndex = c.getColumnIndex("email");
             int passwordIndex = c.getColumnIndex("password");
+            int idIndex = c.getColumnIndex("id");
             c.moveToFirst();
             while (c != null){
                 Log.i("nickname", c.getString(nameIndex));
                 Log.i("email", c.getString(emailIndex));
                 Log.i("password", c.getString(passwordIndex));
+                Log.i("id", c.getString(idIndex));
                 c.moveToNext();
             }
             c.close();
@@ -61,10 +92,13 @@ public class LoginActivity extends AppCompatActivity {
         boolean AllowEntrance = hasObject("accounts", emailNickname, password);
 
         if (AllowEntrance){
-//            Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
-//            startActivity(intent);
+            int id = tryingToAccess.getId();
+            Log.i("FOUND USER, HIS ID IS: ", Integer.toString(id));
+            Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+            intent.putExtra("userId", Integer.toString(id));
+            startActivity(intent);
         }else{
-            Toast.makeText(getApplicationContext(), "this is my Toast message!!! =)", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Wrong Email or Password", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -119,7 +153,15 @@ public class LoginActivity extends AppCompatActivity {
             Log.i("found", String.valueOf(hasObject));
             Log.i("email", cursor.getString(cursor.getColumnIndex("email")));
             Log.i("password", cursor.getString(cursor.getColumnIndex("password")));
+            Log.i("id found", cursor.getString(cursor.getColumnIndex("id")));
+            tryingToAccess.setAllowed(true);
+            Log.i("IS ALLOWED AFTER?", Boolean.toString(tryingToAccess.getAllowed()));
+            Integer id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("id")));
+            tryingToAccess.setId(id);
+            Log.i("IT'S ID AFTER?", Integer.toString(id));
         }
+
+        //String selectStringNickname = "SELECT * FROM " + tableName + " WHERE " + "nickname" + " =?"+ " AND " + "password" + "=?";
 
         cursor.close();          // Dont forget to close your cursor
         userData.close();              //AND your Database!

@@ -60,6 +60,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ArrayList<Marker> allMarkers = new ArrayList<>();
     private ArrayList<Marker> usedMarkers = new ArrayList<>();
 
+    private int Player;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +70,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+        Intent intent = getIntent();
+        Player = Integer.parseInt(intent.getStringExtra("userId"));
+        Log.i("MAPS ACTIVITY PLAYER:", String.valueOf(Player));
     }
 
     @Override
