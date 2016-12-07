@@ -115,15 +115,15 @@
             <ImageView
                 android:layout_width="160dp"
                 android:layout_height="wrap_content"
-                android:src="@drawable/img2"/>
+                android:src="@drawable/img2small"/>
             <ImageView
                 android:layout_width="160dp"
                 android:layout_height="wrap_content"
-                android:src="@drawable/img1"/>
+                android:src="@drawable/img1small"/>
             <ImageView
                 android:layout_width="160dp"
                 android:layout_height="wrap_content"
-                android:src="@drawable/img3"/>
+                android:src="@drawable/img3small"/>
         </LinearLayout>
     </HorizontalScrollView>
     <Button
