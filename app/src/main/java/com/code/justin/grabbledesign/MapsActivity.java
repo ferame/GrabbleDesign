@@ -297,7 +297,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         client.disconnect();
     }
 
-
     public void toInventoryActivity(View view){
         Intent intent = new Intent(getApplicationContext(), InventoryActivity.class);
         startActivity(intent);

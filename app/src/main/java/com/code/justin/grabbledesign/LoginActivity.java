@@ -142,7 +142,6 @@ public class LoginActivity extends AppCompatActivity {
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
 
         String selectStringEmail = "SELECT * FROM " + tableName + " WHERE " + "email" + " =?"+ " AND " + "password" + "=?";
-
         // Add the String you are searching by here.
         // Put it in an array to avoid an unrecognized token error
         Cursor cursor = userData.rawQuery(selectStringEmail, new String[] {emailNickname, password});
@@ -161,7 +160,23 @@ public class LoginActivity extends AppCompatActivity {
             Log.i("IT'S ID AFTER?", Integer.toString(id));
         }
 
-        //String selectStringNickname = "SELECT * FROM " + tableName + " WHERE " + "nickname" + " =?"+ " AND " + "password" + "=?";
+        if(!hasObject){
+            String selectStringNickname = "SELECT * FROM " + tableName + " WHERE " + "nickname" + " =?"+ " AND " + "password" + "=?";
+            //cursor.close();
+            cursor = userData.rawQuery(selectStringNickname, new String[] {emailNickname, password});
+            if(cursor.moveToFirst()){
+                hasObject = true;
+                Log.i("found", String.valueOf(hasObject));
+                Log.i("nickname", cursor.getString(cursor.getColumnIndex("nickname")));
+                Log.i("password", cursor.getString(cursor.getColumnIndex("password")));
+                Log.i("id found", cursor.getString(cursor.getColumnIndex("id")));
+                tryingToAccess.setAllowed(true);
+                Log.i("IS ALLOWED AFTER?", Boolean.toString(tryingToAccess.getAllowed()));
+                Integer id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("id")));
+                tryingToAccess.setId(id);
+                Log.i("IT'S ID AFTER?", Integer.toString(id));
+            }
+        }
 
         cursor.close();          // Dont forget to close your cursor
         userData.close();              //AND your Database!
