@@ -93,6 +93,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } catch (Resources.NotFoundException e) {
             Log.e("MapsActivityRaw", "Can't find style.", e);
         }
+
+        setMarkerClickListener(mMap);
+
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         mMap.setMyLocationEnabled(true);
         DownloadTask task = new DownloadTask();
@@ -252,6 +255,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+
+
     /*public static double checkDistance(double lat1, double lat2, double lon1, double lon2) {
 
         final int R = 6371; // Radius of the earth
@@ -264,6 +269,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         double distance = R * c * 1000; // convert to meters
         return Math.sqrt(distance);
     }*/
+
+    private void setMarkerClickListener(GoogleMap map) {
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                Log.i("Marker Clicked", "HELLO MUH FRIEND");
+                String id = marker.getId();
+                String title = marker.getTitle();
+                Log.i("Marker id is: ", id);
+                Log.i("Marker title is: ", title);
+                //String tag = marker.getTag();
+                return true;
+            }
+        });
+    }
 
     public Action getIndexApiAction() {
         Thing object = new Thing.Builder()
