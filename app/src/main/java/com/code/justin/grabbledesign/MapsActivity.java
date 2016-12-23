@@ -2,6 +2,7 @@ package com.code.justin.grabbledesign;
 
 import android.*;
 import android.Manifest;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -22,6 +23,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.maps.android.kml.KmlLayer;
 import com.google.maps.android.kml.KmlPlacemark;
 
@@ -267,7 +269,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for (KmlPlacemark point : kmlLayer.getPlacemarks()) {
             String pointLetter = point.getProperty("description");
             String pointID = point.getProperty("name");
-            Log.i("PlacemarkID", pointID);
             userData.execSQL("INSERT INTO placemarks (id, placemarkID, superLetter, letter, collected) VALUES ('" + Integer.toString(Player) + "', '" + pointID + "', '" + "false" + "', '" + pointLetter + "', '" + "false" + "')");
         }
         userData.close();
@@ -276,27 +277,52 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean wasPressed(String tag, String letter){
         Log.i("MarkerPress", "letter:" + letter);
         Log.i("MarkerPress", "placeID:" + tag);
-        Boolean pressed = false;
+
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
         String tableName = "placemarks";
         String selectStringPlacemark = "SELECT * FROM " + tableName + " WHERE " + "id" + " =?"+ " AND " + "placemarkID" + "=?";
 
         Cursor cursor = userData.rawQuery(selectStringPlacemark, new String[] {Integer.toString(Player), tag});
-        boolean hasObject = false;
+
+        Boolean pressedBefore = false;
 
         if(cursor.moveToFirst()){
-            hasObject = true;
-            Log.i("foundPress", String.valueOf(hasObject));
-            Log.i("id", cursor.getString(cursor.getColumnIndex("id")));
-            Log.i("letter", cursor.getString(cursor.getColumnIndex("placemarkID")));
-            Log.i("superLetter", cursor.getString(cursor.getColumnIndex("superLetter")));
-            Log.i("letter", cursor.getString(cursor.getColumnIndex("letter")));
-            Log.i("collected", cursor.getString(cursor.getColumnIndex("collected")));
-        }
 
+            Log.i("id", cursor.getString(cursor.getColumnIndex("id")));
+            String markerID = cursor.getString(cursor.getColumnIndex("id"));
+
+            Log.i("placemarkID", cursor.getString(cursor.getColumnIndex("placemarkID")));
+            String markerPlacemarkID = cursor.getString(cursor.getColumnIndex("placemarkID"));
+
+            Log.i("superLetter", cursor.getString(cursor.getColumnIndex("superLetter")));
+            String markerSuperLetter = cursor.getString(cursor.getColumnIndex("superLetter"));
+
+            Log.i("letter", cursor.getString(cursor.getColumnIndex("letter")));
+            String markerLetter = cursor.getString(cursor.getColumnIndex("letter"));
+
+            Log.i("collected", cursor.getString(cursor.getColumnIndex("collected")));
+            String markerCollected = cursor.getString(cursor.getColumnIndex("collected"));
+
+            pressedBefore = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex("collected")));
+
+            if (!pressedBefore){
+                Log.i("ANNOUNCEMENT", "First press of the marker");
+                ContentValues newPlacemarkObject = new ContentValues();
+                newPlacemarkObject.put("id", markerID);
+                newPlacemarkObject.put("placemarkID", markerPlacemarkID);
+                newPlacemarkObject.put("superLetter", markerSuperLetter);
+                newPlacemarkObject.put("letter", markerLetter);
+                newPlacemarkObject.put("collected", "true");
+//                Log.i("newObject", newPlacemarkObject.toString());
+
+                userData.update(tableName, newPlacemarkObject, "placemarkID='"+markerPlacemarkID + "'", null);
+            } else {
+                Log.i("ANNOUNCEMENT", "Was pressed before");
+            }
+        }
         cursor.close();
         userData.close();
-        return pressed;
+        return pressedBefore;
     }
 
     private void setMarkerClickListener(GoogleMap map) {
@@ -307,12 +333,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 String placemarkID = marker.getId();
                 String letter = marker.getTitle();
                 String tag = (String) marker.getTag();
-                Log.i("Marker id is: ", placemarkID);
-                Log.i("Marker title is: ", letter);
-                Log.i("Marker tag is: ", tag);
+                Log.i("Marker id is", placemarkID);
+                Log.i("Marker title is", letter);
+                Log.i("Marker tag is", tag);
 
                 //Making DB check
                 wasPressed(tag, letter);
+                marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
                 //String tag = marker.getTag();
                 return true;
             }
