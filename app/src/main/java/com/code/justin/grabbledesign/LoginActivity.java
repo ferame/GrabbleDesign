@@ -107,7 +107,7 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public boolean hasObjectOTHER(String tableName, String emailNickname, String password) {
+    /*public boolean hasObjectOTHER(String tableName, String emailNickname, String password) {
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
 
         String selectStringEmail = "SELECT * FROM " + tableName + " WHERE " + emailNickname +
@@ -136,7 +136,7 @@ public class LoginActivity extends AppCompatActivity {
         }
         userData.close();
         return hasObject;
-    }
+    }*/
 
     public boolean hasObject(String tableName, String emailNickname, String password) {
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);

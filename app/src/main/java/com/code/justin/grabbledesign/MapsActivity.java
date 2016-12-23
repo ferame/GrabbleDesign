@@ -6,7 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.location.Criteria;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -189,6 +190,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         protected void onPostExecute(KmlLayer kmlLayer) {
             Log.i(TAG,"onPostExecute");
             super.onPostExecute(kmlLayer);
+
+            createPlacemarkDB(kmlLayer);
+
             try {
                 letterLayer = kmlLayer;
                 for (KmlPlacemark point : kmlLayer.getPlacemarks()) {
@@ -255,30 +259,60 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    private void createPlacemarkDB(KmlLayer kmlLayer){
+        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
+        userData.execSQL("CREATE TABLE IF NOT EXISTS placemarks (id INTEGER, placemarkID VARCHAR(20), superLetter boolean, letter VARCHAR(1), collected boolean, PRIMARY KEY(id, placemarkID))");
+        userData.execSQL("DELETE FROM placemarks");
+        letterLayer = kmlLayer;
+        for (KmlPlacemark point : kmlLayer.getPlacemarks()) {
+            String pointLetter = point.getProperty("description");
+            String pointID = point.getProperty("name");
+            Log.i("PlacemarkID", pointID);
+            userData.execSQL("INSERT INTO placemarks (id, placemarkID, superLetter, letter, collected) VALUES ('" + Integer.toString(Player) + "', '" + pointID + "', '" + "false" + "', '" + pointLetter + "', '" + "false" + "')");
+        }
+        userData.close();
+    }
 
+    private boolean wasPressed(String tag, String letter){
+        Log.i("MarkerPress", "letter:" + letter);
+        Log.i("MarkerPress", "placeID:" + tag);
+        Boolean pressed = false;
+        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
+        String tableName = "placemarks";
+        String selectStringPlacemark = "SELECT * FROM " + tableName + " WHERE " + "id" + " =?"+ " AND " + "placemarkID" + "=?";
 
-    /*public static double checkDistance(double lat1, double lat2, double lon1, double lon2) {
+        Cursor cursor = userData.rawQuery(selectStringPlacemark, new String[] {Integer.toString(Player), tag});
+        boolean hasObject = false;
 
-        final int R = 6371; // Radius of the earth
-        Double latDistance = Math.toRadians(lat2 - lat1);
-        Double lonDistance = Math.toRadians(lon2 - lon1);
-        Double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
-        Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        double distance = R * c * 1000; // convert to meters
-        return Math.sqrt(distance);
-    }*/
+        if(cursor.moveToFirst()){
+            hasObject = true;
+            Log.i("foundPress", String.valueOf(hasObject));
+            Log.i("id", cursor.getString(cursor.getColumnIndex("id")));
+            Log.i("letter", cursor.getString(cursor.getColumnIndex("placemarkID")));
+            Log.i("superLetter", cursor.getString(cursor.getColumnIndex("superLetter")));
+            Log.i("letter", cursor.getString(cursor.getColumnIndex("letter")));
+            Log.i("collected", cursor.getString(cursor.getColumnIndex("collected")));
+        }
+
+        cursor.close();
+        userData.close();
+        return pressed;
+    }
 
     private void setMarkerClickListener(GoogleMap map) {
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
                 Log.i("Marker Clicked", "HELLO MUH FRIEND");
-                String id = marker.getId();
-                String title = marker.getTitle();
-                Log.i("Marker id is: ", id);
-                Log.i("Marker title is: ", title);
+                String placemarkID = marker.getId();
+                String letter = marker.getTitle();
+                String tag = (String) marker.getTag();
+                Log.i("Marker id is: ", placemarkID);
+                Log.i("Marker title is: ", letter);
+                Log.i("Marker tag is: ", tag);
+
+                //Making DB check
+                wasPressed(tag, letter);
                 //String tag = marker.getTag();
                 return true;
             }
