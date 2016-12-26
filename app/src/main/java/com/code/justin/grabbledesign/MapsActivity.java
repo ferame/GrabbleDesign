@@ -203,6 +203,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     String toMod = point.getGeometry().toString();
                     Double pointLat = Double.parseDouble(toMod.split("\\(")[1].split(",")[0]);
                     Double pointLng = Double.parseDouble(toMod.split(",")[1].split("\\)")[0]);
+
+                    //Add check of if the marker was pressed before or not, if not - act normal, if yes - change the colour of the marker and make sure the collected is set to true
+
                     Marker newMarker = mMap.addMarker(
                             new MarkerOptions()
                             .position(new LatLng(pointLat,pointLng))
@@ -284,7 +287,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Cursor cursor = userData.rawQuery(selectStringPlacemark, new String[] {Integer.toString(Player), tag});
 
-        Boolean pressedBefore = false;
+        Boolean pressedBefore;
 
         if(cursor.moveToFirst()){
 
@@ -319,11 +322,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             } else {
                 Log.i("ANNOUNCEMENT", "Was pressed before");
             }
+        } else {
+            pressedBefore = true;
         }
         cursor.close();
         userData.close();
         return pressedBefore;
     }
+
+//    private void addToInventory(String letter) {
+//        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
+//        userData.execSQL("CREATE TABLE IF NOT EXISTS inventory (id INTEGER, letter VARCHAR(1), amount INTEGER, PRIMARY KEY(id, letter))");
+//        userData.close();
+//    }
 
     private void setMarkerClickListener(GoogleMap map) {
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -337,8 +348,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.i("Marker title is", letter);
                 Log.i("Marker tag is", tag);
 
-                //Making DB check
-                wasPressed(tag, letter);
+                //Making DB check if the marker was pressed before, if true - pressed before or marker not found in DB, if false - the press was first
+                Boolean markerPressed = wasPressed(tag, letter);
+                if (!markerPressed){
+                    //addToInventory(letter);
+                }
                 marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
                 //String tag = marker.getTag();
                 return true;
