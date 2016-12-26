@@ -55,7 +55,8 @@
 
         <activity android:name=".SettingsActivity" />
         <activity android:name=".InventoryActivity" />
-        <!--<activity android:name=".LoginActivity"></activity>-->
+        <!-- <activity android:name=".LoginActivity"></activity> -->
+        <activity android:name=".CreateAccActivity"></activity>
     </application>
 
 </manifest>
