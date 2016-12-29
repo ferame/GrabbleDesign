@@ -54,9 +54,9 @@ public class LoginActivity extends AppCompatActivity {
         try{
             SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
             userData.execSQL("CREATE TABLE IF NOT EXISTS accounts (nickname VARCHAR(20), email VARCHAR(20), password VARCHAR(20), id INTEGER PRIMARY KEY)");
-            userData.execSQL("DELETE FROM accounts");
-            userData.execSQL("INSERT INTO accounts (nickname, email, password) VALUES ('ferame', 'alisauskas.j@gmail.com', 'somepass')");
-            userData.execSQL("INSERT INTO accounts (nickname, email, password) VALUES ('darakan', 'justinas.ali@zebra.lt', 'somepass2')");
+            //userData.execSQL("DELETE FROM accounts");
+            //userData.execSQL("INSERT INTO accounts (nickname, email, password) VALUES ('ferame', 'alisauskas.j@gmail.com', 'somepass')");
+            //userData.execSQL("INSERT INTO accounts (nickname, email, password) VALUES ('darakan', 'justinas.ali@zebra.lt', 'somepass2')");
 
             Cursor c = userData.rawQuery("SELECT * FROM accounts", null);
             int nameIndex = c.getColumnIndex("nickname");
@@ -81,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void toMapsActivity (View view){
-        AutoCompleteTextView emailNicknameInput = (AutoCompleteTextView)findViewById(R.id.email);
+        EditText emailNicknameInput = (EditText)findViewById(R.id.email);
         String emailNickname = emailNicknameInput.getText().toString();
         Log.i("Got email/nickname", emailNickname);
         EditText passwordInput = (EditText)findViewById(R.id.password);
@@ -107,36 +107,6 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    /*public boolean hasObjectOTHER(String tableName, String emailNickname, String password) {
-        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
-
-        String selectStringEmail = "SELECT * FROM " + tableName + " WHERE " + emailNickname +
-                " = " +"email" + " AND " + password + " = " + "password";
-
-        String selectStringNickname = "SELECT * FROM " + tableName + " WHERE " + emailNickname +
-                " = " +"nickname" + " AND " + password + " = " + "password";
-
-        boolean hasObject = false;
-        Cursor cursor = userData.rawQuery(selectStringEmail, null);
-        if (cursor != null){
-            if(cursor.getCount() > 0){
-                hasObject = true;
-            }
-        } else {
-            cursor = userData.rawQuery(selectStringNickname, null);
-            if (cursor != null){
-                if (cursor.getCount() > 0){
-                    hasObject = true;
-                }
-            }
-        }
-
-        if(cursor != null){
-            cursor.close();
-        }
-        userData.close();
-        return hasObject;
-    }*/
 
     public boolean hasObject(String tableName, String emailNickname, String password) {
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
