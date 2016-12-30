@@ -52,6 +52,7 @@ public class CreateAccActivity extends AppCompatActivity {
         userData.execSQL("CREATE TABLE IF NOT EXISTS accounts (nickname VARCHAR(20), email VARCHAR(20), password VARCHAR(20), id INTEGER PRIMARY KEY)");
         if (checkInputs(nicknameInput, emailInput, passwordInput)){
             userData.execSQL("INSERT INTO accounts (nickname, email, password) VALUES ('" + nicknameInput + "', '" +  emailInput + "', '" + passwordInput +"')");
+            createUserInventoryTable(findUserId(nicknameInput));
             Log.i("user creation", "done, should be.");
         } else {
             userData.close();
@@ -159,5 +160,37 @@ public class CreateAccActivity extends AppCompatActivity {
         boolean exists = (cursor.getCount() > 0);
         cursor.close();
         return exists;
+    }
+
+    public void createUserInventoryTable(Integer idInput){
+        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
+        userData.execSQL("CREATE TABLE IF NOT EXISTS inventory (id INTEGER, letter VARCHAR(1), amount INTEGER, PRIMARY KEY(id,letter))");
+
+        for(char alphabet = 'A'; alphabet <= 'Z'; alphabet++) {
+//            System.out.println(alphabet);
+            userData.execSQL("INSERT INTO inventory (id, letter, amount) VALUES (" + idInput + ", '" +  alphabet + "', " + 0 +")");
+        }
+        userData.close();
+    }
+
+    public void createUserSettingsTable(Integer idInput){
+        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
+        userData.execSQL("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, nightMode boolean, powerSaving boolean, autoCollect boolean, superLetter boolean, visibilityRad INTEGER, overlay INTEGER))");
+        userData.execSQL("INSERT INTO settings (id, nightMode, powerSaving, autoCollect, superletter, visibilityRad, overlay) VALUES (" + idInput + ", false, false, false, false, 50, 1)");
+        userData.close();
+    }
+
+    public Integer findUserId(String inputNickname){
+        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
+        String selectStringId = "SELECT * FROM " + "accounts" + " WHERE " + "nickname" + " =?";
+
+        Cursor cursor = userData.rawQuery(selectStringId, new String[] {inputNickname});
+
+        if(cursor.moveToFirst()){
+            Log.i("Found userID", cursor.getString(cursor.getColumnIndex("id")));
+            Integer id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("id")));
+            return id;
+        }
+        return null;
     }
 }

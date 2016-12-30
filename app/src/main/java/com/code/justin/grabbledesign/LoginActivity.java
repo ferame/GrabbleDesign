@@ -75,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
             userData.close();
         }
         catch (Exception e){
-//            e.printStackTrace();
+            e.printStackTrace();
         }
 
     }

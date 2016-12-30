@@ -351,13 +351,46 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //Making DB check if the marker was pressed before, if true - pressed before or marker not found in DB, if false - the press was first
                 Boolean markerPressed = wasPressed(tag, letter);
                 if (!markerPressed){
-                    //addToInventory(letter);
+                    addToInventory(letter);
                 }
                 marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
                 //String tag = marker.getTag();
                 return true;
             }
         });
+    }
+
+    private void addToInventory(String letter){
+        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
+        String tableName = "inventory";
+        String selectStringLetter = "SELECT * FROM " + tableName + " WHERE " + "id" + " =?"+ " AND " + "letter" + "=?";
+
+        Cursor cursor = userData.rawQuery(selectStringLetter, new String[] {Integer.toString(Player), letter});
+
+        if(cursor.moveToFirst()){
+
+            Log.i("id", cursor.getString(cursor.getColumnIndex("id")));
+            String cursorId = cursor.getString(cursor.getColumnIndex("id"));
+
+            Log.i("letter", cursor.getString(cursor.getColumnIndex("letter")));
+            String cursorLetter = cursor.getString(cursor.getColumnIndex("letter"));
+
+            Log.i("amount", cursor.getString(cursor.getColumnIndex("amount")));
+            Integer cursorAmount = cursor.getInt(cursor.getColumnIndex("amount"));
+
+            ContentValues newPlacemarkObject = new ContentValues();
+            newPlacemarkObject.put("id", cursorId);
+            newPlacemarkObject.put("letter", cursorLetter);
+            newPlacemarkObject.put("amount", cursorAmount+1);
+            Log.i("newObject", newPlacemarkObject.toString());
+
+            userData.update(tableName, newPlacemarkObject, "letter ='" + cursorLetter + "'" + " and id = '" + cursorId + "'", null);
+
+        } else {
+            Log.i("Error!!!", "addToInventory failed");
+        }
+        cursor.close();
+        userData.close();
     }
 
     public Action getIndexApiAction() {
