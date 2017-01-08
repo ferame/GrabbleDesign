@@ -188,6 +188,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
 
+
+        //Need fix for latlng
         @Override
         protected void onPostExecute(KmlLayer kmlLayer) {
             Log.i(TAG,"onPostExecute");
@@ -264,19 +266,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    //Need fix for latlng
     private void createPlacemarkDB(KmlLayer kmlLayer){
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
-        userData.execSQL("CREATE TABLE IF NOT EXISTS placemarks (id INTEGER, placemarkID VARCHAR(20), superLetter boolean, letter VARCHAR(1), collected boolean, PRIMARY KEY(id, placemarkID))");
+        userData.execSQL("CREATE TABLE IF NOT EXISTS placemarks (id INTEGER, placemarkID VARCHAR(20), pointLat REAL, pointLng REAL, superLetter boolean, letter VARCHAR(1), collected boolean, PRIMARY KEY(id, placemarkID))");
+
         userData.execSQL("DELETE FROM placemarks");
         letterLayer = kmlLayer;
         for (KmlPlacemark point : kmlLayer.getPlacemarks()) {
             String pointLetter = point.getProperty("description");
             String pointID = point.getProperty("name");
-            userData.execSQL("INSERT INTO placemarks (id, placemarkID, superLetter, letter, collected) VALUES ('" + Integer.toString(Player) + "', '" + pointID + "', '" + "false" + "', '" + pointLetter + "', '" + "false" + "')");
+            String toMod = point.getGeometry().toString();
+            Double pointLat = Double.parseDouble(toMod.split("\\(")[1].split(",")[0]);
+            Double pointLng = Double.parseDouble(toMod.split(",")[1].split("\\)")[0]);
+            userData.execSQL("INSERT INTO placemarks (id, placemarkID, pointLat, pointLng, superLetter, letter, collected) VALUES ('" + Integer.toString(Player) + "', '" + pointID + "', '" + pointLat + "', '" + pointLng + "', '" + "false" + "', '" + pointLetter + "', '" + "false" + "')");
         }
         userData.close();
     }
 
+
+    //Edited for latlng
     private boolean wasPressed(String tag, String letter){
         Log.i("MarkerPress", "letter:" + letter);
         Log.i("MarkerPress", "placeID:" + tag);
@@ -297,6 +306,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.i("placemarkID", cursor.getString(cursor.getColumnIndex("placemarkID")));
             String markerPlacemarkID = cursor.getString(cursor.getColumnIndex("placemarkID"));
 
+            Log.i("pointLat", cursor.getString(cursor.getColumnIndex("pointLat")));
+            String markerPointLat = cursor.getString(cursor.getColumnIndex("pointLat"));
+
+            Log.i("pointLng", cursor.getString(cursor.getColumnIndex("pointLng")));
+            String markerPointLng = cursor.getString(cursor.getColumnIndex("pointLng"));
+
             Log.i("superLetter", cursor.getString(cursor.getColumnIndex("superLetter")));
             String markerSuperLetter = cursor.getString(cursor.getColumnIndex("superLetter"));
 
@@ -313,6 +328,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 ContentValues newPlacemarkObject = new ContentValues();
                 newPlacemarkObject.put("id", markerID);
                 newPlacemarkObject.put("placemarkID", markerPlacemarkID);
+                newPlacemarkObject.put("pointLat", markerPointLat);
+                newPlacemarkObject.put("pointLng", markerPointLng);
                 newPlacemarkObject.put("superLetter", markerSuperLetter);
                 newPlacemarkObject.put("letter", markerLetter);
                 newPlacemarkObject.put("collected", "true");
@@ -330,17 +347,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return pressedBefore;
     }
 
-//    private void addToInventory(String letter) {
-//        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
-//        userData.execSQL("CREATE TABLE IF NOT EXISTS inventory (id INTEGER, letter VARCHAR(1), amount INTEGER, PRIMARY KEY(id, letter))");
-//        userData.close();
-//    }
 
     private void setMarkerClickListener(GoogleMap map) {
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                Log.i("Marker Clicked", "HELLO MUH FRIEND");
+                Log.i("Marker Clicked", "");
                 String placemarkID = marker.getId();
                 String letter = marker.getTitle();
                 String tag = (String) marker.getTag();
