@@ -196,11 +196,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.i(TAG,"onPostExecute");
             super.onPostExecute(kmlLayer);
             Log.i("Date check", checkDate().toString());
-//            if (checkDate()){
-//
-//            } else {
+            if (checkDate()){
+                letterLayer = kmlLayer;
+                buildMarkerMap();
+            } else {
                 createPlacemarkDB(kmlLayer);
-
                 try {
                     letterLayer = kmlLayer;
                     for (KmlPlacemark point : kmlLayer.getPlacemarks()) {
@@ -224,8 +224,57 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     e.printStackTrace();
                 }
                 letterLayer = kmlLayer;
-//            }
+            }
         }
+    }
+
+    private void buildMarkerMap(){
+        Log.i("buildMarkerMap", "started");
+        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
+        String tableName = "placemarks";
+        String selectStringPlacemark = "SELECT * FROM " + tableName + " WHERE " + "id" + " =?";
+
+        Cursor c = userData.rawQuery(selectStringPlacemark, new String[] {Integer.toString(Player)});
+        //Cursor c = userData.rawQuery(selectStringPlacemark, null);
+        int placemarkIdIndex = c.getColumnIndex("placemarkID");
+        int pointLatIndex = c.getColumnIndex("pointLat");
+        int pointLngIndex = c.getColumnIndex("pointLng");
+        int superLetterIndex = c.getColumnIndex("superLetter");
+        int letterIndex = c.getColumnIndex("letter");
+        int collectedIndex = c.getColumnIndex("collected");
+        c.moveToFirst();
+        Integer count = 1;
+        while (c != null){
+            String placemarkId = c.getString(placemarkIdIndex);
+            Double pointLat = Double.parseDouble(c.getString(pointLatIndex));
+            Double pointLng = Double.parseDouble(c.getString(pointLngIndex));
+            String superLetter = c.getString(superLetterIndex);
+            String letter = c.getString(letterIndex);
+            String collected = c.getString(collectedIndex);
+
+            Marker newMarker = mMap.addMarker(
+                    new MarkerOptions()
+                            .position(new LatLng(pointLat,pointLng))
+                            .title(letter)
+                            .visible(false));
+
+            newMarker.setTag(placemarkId);
+
+            if (collected.equalsIgnoreCase("true")){
+                newMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+            }
+
+            allMarkers.add(newMarker);
+            count++;
+            if (count != 1000) {
+                c.moveToNext();
+            } else {
+                break;
+            }
+        }
+        c.close();
+        userData.close();
+        Log.i("buildMarkerMap", "ended");
     }
 
     @Override
@@ -255,6 +304,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.i(TAG, "findNearbyLetters");
 
         if(letterLayer != null){
+            Log.i(TAG,"gets letterLayer");
             if (letterLayer.getPlacemarks() != null){
                 Log.i(TAG,"checksPlacemarks");
                 for (Marker point : allMarkers){
