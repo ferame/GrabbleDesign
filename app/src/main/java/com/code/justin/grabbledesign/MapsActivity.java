@@ -5,6 +5,7 @@ import android.Manifest;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -46,6 +47,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -89,7 +91,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             boolean success = mMap.setMapStyle(
                     MapStyleOptions.loadRawResourceStyle(
                             this, R.raw.style_json));
-
             if (!success) {
                 Log.e("MapsActivityRaw", "Style parsing failed.");
             }
@@ -194,32 +195,36 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         protected void onPostExecute(KmlLayer kmlLayer) {
             Log.i(TAG,"onPostExecute");
             super.onPostExecute(kmlLayer);
+            Log.i("Date check", checkDate().toString());
+//            if (checkDate()){
+//
+//            } else {
+                createPlacemarkDB(kmlLayer);
 
-            createPlacemarkDB(kmlLayer);
+                try {
+                    letterLayer = kmlLayer;
+                    for (KmlPlacemark point : kmlLayer.getPlacemarks()) {
+                        String pointLetter = point.getProperty("description");
+                        String pointID = point.getProperty("name");
+                        String toMod = point.getGeometry().toString();
+                        Double pointLat = Double.parseDouble(toMod.split("\\(")[1].split(",")[0]);
+                        Double pointLng = Double.parseDouble(toMod.split(",")[1].split("\\)")[0]);
 
-            try {
-                letterLayer = kmlLayer;
-                for (KmlPlacemark point : kmlLayer.getPlacemarks()) {
-                    String pointLetter = point.getProperty("description");
-                    String pointID = point.getProperty("name");
-                    String toMod = point.getGeometry().toString();
-                    Double pointLat = Double.parseDouble(toMod.split("\\(")[1].split(",")[0]);
-                    Double pointLng = Double.parseDouble(toMod.split(",")[1].split("\\)")[0]);
+                        //Add check of if the marker was pressed before or not, if not - act normal, if yes - change the colour of the marker and make sure the collected is set to true
 
-                    //Add check of if the marker was pressed before or not, if not - act normal, if yes - change the colour of the marker and make sure the collected is set to true
-
-                    Marker newMarker = mMap.addMarker(
-                            new MarkerOptions()
-                            .position(new LatLng(pointLat,pointLng))
-                            .title(pointLetter)
-                            .visible(false));
-                    newMarker.setTag(pointID);
-                    allMarkers.add(newMarker);
+                        Marker newMarker = mMap.addMarker(
+                                new MarkerOptions()
+                                        .position(new LatLng(pointLat,pointLng))
+                                        .title(pointLetter)
+                                        .visible(false));
+                        newMarker.setTag(pointID);
+                        allMarkers.add(newMarker);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            letterLayer = kmlLayer;
+                letterLayer = kmlLayer;
+//            }
         }
     }
 
@@ -403,6 +408,47 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         cursor.close();
         userData.close();
+    }
+
+    private Boolean checkDate(){
+        Boolean sameDay = false;
+        Log.i("Get Date", getDate());
+        String date = getDate();
+        Log.i("Last Date", getLastDate());
+        String lastDate = getLastDate();
+        Log.i("Date comparison","Started");
+        if (date.equalsIgnoreCase(lastDate)){
+            Log.i("Date check","passed");
+            sameDay = true;
+        } else {
+            Log.i("Date check","failed");
+            setDate();
+        }
+        Log.i("Date comparison","Ended");
+        return sameDay;
+    }
+
+    private String getDate(){
+        Calendar c = Calendar.getInstance();
+
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);
+
+        String date = year + "-" + month + "-" + day;
+        return date;
+    }
+
+    private String getLastDate(){
+        SharedPreferences mPrefs = getSharedPreferences("date", 0);
+        String lastDate = mPrefs.getString("date", "None");
+        return lastDate;
+    }
+
+    private void setDate(){
+        SharedPreferences mPrefs = getSharedPreferences("date", 0);
+        SharedPreferences.Editor mEditor = mPrefs.edit();
+        mEditor.putString("date", getDate()).commit();
     }
 
     public Action getIndexApiAction() {
