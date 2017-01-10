@@ -18,48 +18,22 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="18dp" />
 
-
     <TextView
         android:id="@+id/textViewInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="33dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:text="Your text"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:hint="Enter Word Here"
+        android:textSize="30dp"
+        android:textAlignment="center"
         android:textColor="?attr/editTextColor"
         android:background="?attr/editTextBackground"
         android:gravity="center_vertical"
         android:textAppearance="?android:attr/textAppearanceMediumInverse"
         android:layout_below="@+id/textView3"
         />
-
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="33dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:layout_below="@+id/textViewInput"
-        android:layout_alignParentStart="true">
-
-        <EditText
-            android:layout_width="355dp"
-            android:layout_height="wrap_content"
-            android:hint="Enter Word Here" />
-    </android.support.design.widget.TextInputLayout>
-
-    <Button
-        android:text="SUBMIT"
-        android:layout_width="match_parent"
-        android:layout_height="62dp"
-        android:id="@+id/button4"
-        android:background="@drawable/keyboard_submit"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:textAlignment="center"
-        android:textSize="18sp" />
 
     <LinearLayout
         android:id="@+id/row1"
@@ -85,7 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="62dp"
                 android:text="W"
-                android:background="@drawable/keyboard_button_border_disabled"
+                android:background="@drawable/keyboard_button_border"
                 android:layout_weight="1"
                 android:textAllCaps="false">
             </Button>
@@ -212,7 +186,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="62dp"
                 android:text="F"
-                android:background="@drawable/keyboard_button_border_disabled"
+                android:background="@drawable/keyboard_button_border"
                 android:layout_weight="1"
                 android:textAllCaps="false">
             </Button>
@@ -310,8 +284,8 @@
                 android:id="@+id/Cletter"
                 android:layout_width="match_parent"
                 android:layout_height="62dp"
-                android:text="C1"
-                android:background="@drawable/keyboard_button_border_disabled"
+                android:text="C"
+                android:background="@drawable/keyboard_button_border"
                 android:layout_weight="1"
                 android:textAllCaps="false">
             </Button>
@@ -347,7 +321,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="62dp"
                 android:text="M"
-                android:background="@drawable/keyboard_button_border_disabled"
+                android:background="@drawable/keyboard_button_border"
                 android:layout_weight="1"
                 android:textAllCaps="false">
             </Button>
@@ -361,5 +335,16 @@
             </Button>
         </LinearLayout>
     </LinearLayout>
+
+    <Button
+        android:text="SUBMIT"
+        android:layout_width="match_parent"
+        android:layout_height="62dp"
+        android:id="@+id/button4"
+        android:background="@drawable/keyboard_submit"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:textAlignment="center"
+        android:textSize="18sp" />
 
 </RelativeLayout>
