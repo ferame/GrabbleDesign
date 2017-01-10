@@ -77,7 +77,8 @@
                 android:layout_height="62dp"
                 android:text="Q"
                 android:background="@drawable/keyboard_button_border"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:textAllCaps="false">
             </Button>
             <Button
                 android:id="@+id/Wletter"
@@ -85,7 +86,8 @@
                 android:layout_height="62dp"
                 android:text="W"
                 android:background="@drawable/keyboard_button_border_disabled"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:textAllCaps="false">
             </Button>
             <Button
                 android:id="@+id/Eletter"
@@ -93,7 +95,8 @@
                 android:layout_height="62dp"
                 android:text="E"
                 android:background="@drawable/keyboard_button_border"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:textAllCaps="false">
             </Button>
             <Button
                 android:id="@+id/Rletter"
@@ -101,7 +104,8 @@
                 android:layout_height="62dp"
                 android:text="R"
                 android:background="@drawable/keyboard_button_border"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:textAllCaps="false">
             </Button>
             <Button
                 android:id="@+id/Tletter"
@@ -109,7 +113,8 @@
                 android:layout_height="62dp"
                 android:text="T"
                 android:background="@drawable/keyboard_button_border"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:textAllCaps="false">
             </Button>
             <Button
                 android:id="@+id/Yletter"
@@ -117,7 +122,8 @@
                 android:layout_height="62dp"
                 android:text="Y"
                 android:background="@drawable/keyboard_button_border"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:textAllCaps="false">
             </Button>
             <Button
                 android:id="@+id/Uletter"
@@ -125,7 +131,8 @@
                 android:layout_height="62dp"
                 android:text="U"
                 android:background="@drawable/keyboard_button_border"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:textAllCaps="false">
             </Button>
             <Button
                 android:id="@+id/Iletter"
@@ -133,7 +140,8 @@
                 android:layout_height="62dp"
                 android:text="I"
                 android:background="@drawable/keyboard_button_border"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:textAllCaps="false">
             </Button>
             <Button
                 android:id="@+id/Oletter"
@@ -141,7 +149,8 @@
                 android:layout_height="62dp"
                 android:text="O"
                 android:background="@drawable/keyboard_button_border"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:textAllCaps="false">
             </Button>
             <Button
                 android:id="@+id/Pletter"
@@ -149,7 +158,8 @@
                 android:layout_height="62dp"
                 android:text="P"
                 android:background="@drawable/keyboard_button_border"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:textAllCaps="false">
             </Button>
         </LinearLayout>
     </LinearLayout>
@@ -176,7 +186,8 @@
                 android:layout_height="62dp"
                 android:text="A"
                 android:background="@drawable/keyboard_button_border"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:textAllCaps="false">
             </Button>
             <Button
                 android:id="@+id/Sletter"
@@ -184,7 +195,8 @@
                 android:layout_height="62dp"
                 android:text="S"
                 android:background="@drawable/keyboard_button_border"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:textAllCaps="false">
             </Button>
             <Button
                 android:id="@+id/Dletter"
@@ -192,7 +204,8 @@
                 android:layout_height="62dp"
                 android:text="D"
                 android:background="@drawable/keyboard_button_border"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:textAllCaps="false">
             </Button>
             <Button
                 android:id="@+id/Fletter"
@@ -200,7 +213,8 @@
                 android:layout_height="62dp"
                 android:text="F"
                 android:background="@drawable/keyboard_button_border_disabled"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:textAllCaps="false">
             </Button>
             <Button
                 android:id="@+id/Gletter"
@@ -208,7 +222,8 @@
                 android:layout_height="62dp"
                 android:text="G"
                 android:background="@drawable/keyboard_button_border"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:textAllCaps="false">
             </Button>
             <Button
                 android:id="@+id/Hletter"
@@ -217,7 +232,8 @@
                 android:text="H"
                 android:background="@drawable/keyboard_button_border"
                 android:layout_weight="1"
-                android:padding="1dp">
+                android:padding="1dp"
+                android:textAllCaps="false">
             </Button>
             <Button
                 android:id="@+id/Jletter"
@@ -225,7 +241,8 @@
                 android:layout_height="62dp"
                 android:text="J"
                 android:background="@drawable/keyboard_button_border"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:textAllCaps="false">
             </Button>
             <Button
                 android:id="@+id/Kletter"
@@ -233,7 +250,8 @@
                 android:layout_height="62dp"
                 android:text="K"
                 android:background="@drawable/keyboard_button_border"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:textAllCaps="false">
             </Button>
             <Button
                 android:id="@+id/Lletter"
@@ -241,7 +259,8 @@
                 android:layout_height="62dp"
                 android:text="L"
                 android:background="@drawable/keyboard_button_border"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:textAllCaps="false">
             </Button>
             <Space
                 android:layout_height="62dp"
@@ -275,7 +294,8 @@
                 android:layout_height="62dp"
                 android:text="Z"
                 android:background="@drawable/keyboard_button_border"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:textAllCaps="false">
             </Button>
             <Button
                 android:id="@+id/Xletter"
@@ -283,7 +303,8 @@
                 android:layout_height="62dp"
                 android:text="X"
                 android:background="@drawable/keyboard_button_border"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:textAllCaps="false">
             </Button>
             <Button
                 android:id="@+id/Cletter"
@@ -291,7 +312,8 @@
                 android:layout_height="62dp"
                 android:text="C1"
                 android:background="@drawable/keyboard_button_border_disabled"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:textAllCaps="false">
             </Button>
             <Button
                 android:id="@+id/Vletter"
@@ -299,7 +321,8 @@
                 android:layout_height="62dp"
                 android:text="V"
                 android:background="@drawable/keyboard_button_border"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:textAllCaps="false">
             </Button>
             <Button
                 android:id="@+id/Bletter"
@@ -307,7 +330,8 @@
                 android:layout_height="62dp"
                 android:text="B"
                 android:background="@drawable/keyboard_button_border"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:textAllCaps="false">
             </Button>
             <Button
                 android:id="@+id/Nletter"
@@ -315,7 +339,8 @@
                 android:layout_height="62dp"
                 android:text="N"
                 android:background="@drawable/keyboard_button_border"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:textAllCaps="false">
             </Button>
             <Button
                 android:id="@+id/Mletter"
@@ -323,7 +348,8 @@
                 android:layout_height="62dp"
                 android:text="M"
                 android:background="@drawable/keyboard_button_border_disabled"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:textAllCaps="false">
             </Button>
             <Button
                 android:id="@+id/backSpace2"
