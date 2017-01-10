@@ -19,13 +19,29 @@
         android:layout_marginTop="18dp" />
 
 
+    <TextView
+        android:id="@+id/textViewInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="33dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="Your text"
+        android:hint="Enter Word Here"
+        android:textColor="?attr/editTextColor"
+        android:background="?attr/editTextBackground"
+        android:gravity="center_vertical"
+        android:textAppearance="?android:attr/textAppearanceMediumInverse"
+        android:layout_below="@+id/textView3"
+        />
+
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="33dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:layout_below="@+id/textView3"
+        android:layout_below="@+id/textViewInput"
         android:layout_alignParentStart="true">
 
         <EditText
@@ -273,7 +289,7 @@
                 android:id="@+id/Cletter"
                 android:layout_width="match_parent"
                 android:layout_height="62dp"
-                android:text="C"
+                android:text="C1"
                 android:background="@drawable/keyboard_button_border_disabled"
                 android:layout_weight="1">
             </Button>

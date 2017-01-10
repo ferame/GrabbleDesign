@@ -195,7 +195,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         protected void onPostExecute(KmlLayer kmlLayer) {
             Log.i(TAG,"onPostExecute");
             super.onPostExecute(kmlLayer);
-            Log.i("Date check", checkDate().toString());
+            //Log.i("Date check", checkDate().toString());
             if (checkDate()){
                 letterLayer = kmlLayer;
                 buildMarkerMap();
@@ -478,7 +478,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return sameDay;
     }
 
-    private String getDate(){
+    public String getDate(){
         Calendar c = Calendar.getInstance();
 
         int year = c.get(Calendar.YEAR);
@@ -545,6 +545,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void toWordInputActivity(View view){
         Intent intent = new Intent(getApplicationContext(), WordInputActivity.class);
+        intent.putExtra("userId", Integer.toString(Player));
         startActivity(intent);
     }
 }

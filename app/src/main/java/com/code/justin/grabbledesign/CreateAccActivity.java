@@ -2,6 +2,7 @@ package com.code.justin.grabbledesign;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,6 +39,9 @@ public class CreateAccActivity extends AppCompatActivity {
         String password = passwordInput.getText().toString();
 
         Boolean isSuccessful = createAcc(nickname, email, password);
+
+        //Create last date variable
+        setLastDate();
 
         if (isSuccessful){
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
@@ -192,5 +197,11 @@ public class CreateAccActivity extends AppCompatActivity {
             return id;
         }
         return null;
+    }
+
+    private void setLastDate(){
+        SharedPreferences mPrefs = getSharedPreferences("date", 0);
+        SharedPreferences.Editor mEditor = mPrefs.edit();
+        mEditor.putString("date", "9999-99-99").commit();
     }
 }
