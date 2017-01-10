@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.drive.query.internal.InFilter;
 import com.google.android.gms.phenotype.Flag;
 
 public class WordInputActivity extends AppCompatActivity implements View.OnClickListener{
@@ -71,6 +72,13 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
             buttons[i].setOnClickListener(this);
             i++;
         }
+        //Setting up backspaces
+        buttons[26] = ((Button) findViewById(R.id.backSpace1));
+        buttons[26].setOnClickListener(this);
+
+        buttons[27] = ((Button) findViewById(R.id.backSpace2));
+        buttons[27].setOnClickListener(this);
+
 
         Log.i("Button Count info", "Starts");
         setLetterButtonCounts();
@@ -79,23 +87,6 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
         Log.i("Button Colouring", "Starts");
         setLetterButtonColours();
         Log.i("Button Colouring", "Ends");
-//        for (int i = 0; i < buttons.length; i++) {
-//            {
-//                String buttonID = "sound" + (i + 1);
-//
-//                int resID = getResources().getIdentifier(buttonID, "id", getPackageName());
-//                buttons[i] = ((Button) findViewById(resID));
-//                buttons[i].setOnClickListener(this);
-//            }
-//
-////            Button one = (Button) findViewById(R.id.oneButton);
-////            one.setOnClickListener(this); // calling onClick() method
-////            Button two = (Button) findViewById(R.id.twoButton);
-////            two.setOnClickListener(this);
-////            Button three = (Button) findViewById(R.id.threeButton);
-////            three.setOnClickListener(this);
-//
-//        }
     }
 
     @Override
@@ -104,121 +95,119 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
 
             case R.id.Aletter:
                 Log.i("Keyboard", "A pressed");
-                int letterCount = getLetterCount('A');
-                if (letterCount == -1){
-                    Log.i("Error", "Letter count invalid");
-                }else if (letterCount == 0){
-                    Toast.makeText(getApplicationContext(), "No A's remaining", Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(getApplicationContext(), "A pressed", Toast.LENGTH_SHORT).show();
-                }
+                onLetterPress('A', 0);
                 break;
 
             case R.id.Bletter:
                 Log.i("Keyboard", "B pressed");
+                onLetterPress('B', 1);
                 break;
 
             case R.id.Cletter:
                 Log.i("Keyboard", "C pressed");
-
+                onLetterPress('C', 2);
                 break;
 
             case R.id.Dletter:
-                // do your code
+                onLetterPress('D', 3);
                 break;
 
             case R.id.Eletter:
-                // do your code
+                onLetterPress('E', 4);
                 break;
 
             case R.id.Fletter:
-                // do your code
+                onLetterPress('F', 5);
                 break;
 
             case R.id.Gletter:
-                // do your code
+                onLetterPress('G', 6);
                 break;
 
             case R.id.Hletter:
-                // do your code
+                onLetterPress('H', 7);
                 break;
 
             case R.id.Iletter:
-                // do your code
+                onLetterPress('I', 8);
                 break;
 
             case R.id.Jletter:
-                // do your code
+                onLetterPress('J', 9);
                 break;
 
             case R.id.Kletter:
-                // do your code
+                onLetterPress('K', 10);
                 break;
 
             case R.id.Lletter:
-                // do your code
+                onLetterPress('L', 11);
                 break;
 
             case R.id.Mletter:
-                // do your code
+                onLetterPress('M', 12);
                 break;
 
             case R.id.Nletter:
-                // do your code
+                onLetterPress('N', 13);
                 break;
 
             case R.id.Oletter:
-                // do your code
+                onLetterPress('O', 14);
                 break;
 
             case R.id.Pletter:
-                // do your code
+                onLetterPress('P', 15);
                 break;
 
             case R.id.Qletter:
-                // do your code
+                onLetterPress('Q', 16);
                 break;
 
             case R.id.Rletter:
-                // do your code
+                onLetterPress('R', 17);
                 break;
 
             case R.id.Sletter:
-                // do your code
+                onLetterPress('S', 18);
                 break;
 
             case R.id.Tletter:
-                // do your code
+                onLetterPress('T', 19);
                 break;
 
             case R.id.Uletter:
-                // do your code
+                onLetterPress('U', 20);
                 break;
 
             case R.id.Vletter:
-                // do your code
+                onLetterPress('V', 21);
                 break;
 
             case R.id.Wletter:
-                // do your code
+                onLetterPress('W', 22);
                 break;
 
             case R.id.Xletter:
-                // do your code
+                onLetterPress('X', 23);
                 break;
 
             case R.id.Yletter:
-                // do your code
+                onLetterPress('Y', 24);
                 break;
 
             case R.id.Zletter:
-                // do your code
+                onLetterPress('Z', 25);
                 break;
 
             case R.id.backSpace1:
+                Log.i("Keyboard", "backspace pressed");
+                backspaceAction();
                 break;
 
             case R.id.backSpace2:
+                Log.i("Keyboard", "backspace pressed");
+                backspaceAction();
                 break;
 
             default:
@@ -226,7 +215,6 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-//    new function
     private int getLetterCount(char letter){
         for (int i = 0; i < 26; i++){
             if (lettersParam[i].getLetter() == letter){
@@ -301,6 +289,106 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
             } else {
                 buttons[i].setBackgroundResource(R.drawable.keyboard_button_border_disabled);
             }
+        }
+    }
+
+    private void onLetterPress(Character letter, Integer letterIndex){
+        int letterCount = getLetterCount(letter);
+        if (letterCount == -1){
+            Log.i("Error", "Letter count invalid");
+        }else if (letterCount == 0){
+            Toast.makeText(getApplicationContext(), "No "+ letter + "'s remaining", Toast.LENGTH_SHORT).show();
+        }else{
+            Boolean fullWord = checkIfSeven();
+            if (fullWord){
+                Toast.makeText(getApplicationContext(), "Already 7 letters", Toast.LENGTH_LONG).show();
+            } else {
+                addLetter(letter.toString());
+                reduceLetterCount(letterIndex);
+                updateLetterButtonColour(letterIndex);
+                updateLetterCountIndex(letterIndex);
+            }
+        }
+    }
+
+    private boolean checkIfSeven(){
+        TextView textInput = (TextView)findViewById(R.id.textViewInput);
+        if (textInput.getText().length() == 7){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    private void addLetter(String letter){
+        TextView textInput = (TextView)findViewById(R.id.textViewInput);
+        textInput.setText(textInput.getText() + letter);
+    }
+
+    private void increaseLetterCount(Integer letterIndex){
+        lettersParam[letterIndex].setCount(lettersParam[letterIndex].getCount() + 1);
+    }
+
+    private void reduceLetterCount(Integer letterIndex){
+        lettersParam[letterIndex].setCount(lettersParam[letterIndex].getCount() - 1);
+    }
+
+    private void updateLetterButtonColour(Integer letterIndex){
+        Integer count = lettersParam[letterIndex].getCount();
+
+        if (count > 3){
+            buttons[letterIndex].setBackgroundResource(R.drawable.keyboard_button_border);
+        } else if ( count > 0){
+            buttons[letterIndex].setBackgroundResource(R.drawable.keyboard_button_border_low);
+        } else {
+            buttons[letterIndex].setBackgroundResource(R.drawable.keyboard_button_border_disabled);
+        }
+    }
+
+    private void updateLetterCountIndex(Integer letterIndex){
+        Character letter = lettersParam[letterIndex].getLetter();
+        Integer count = lettersParam[letterIndex].getCount();
+
+        String toShow = letter + count.toString();
+        SpannableStringBuilder showSpan = new SpannableStringBuilder(toShow);
+        showSpan.setSpan(new SuperscriptSpan(), 1, showSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        showSpan.setSpan(new RelativeSizeSpan(0.7f), 1, showSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        buttons[letterIndex].setText(showSpan);
+    }
+
+    private void backspaceAction(){
+        TextView textInput = (TextView)findViewById(R.id.textViewInput);
+        String startText = textInput.getText().toString();
+        if (startText.length() > 0){
+            Character lastLetter = startText.charAt(startText.length()-1);
+            Integer letterIndex = getLetterPosition(lastLetter);
+            Log.i("got position "+ letterIndex.toString(), "for" + lastLetter);
+            increaseLetterCount(letterIndex);
+            updateLetterButtonColour(letterIndex);
+            updateLetterCountIndex(letterIndex);
+            textInput.setText(removeLastLetter(startText));
+        } else {
+            Toast.makeText(getApplicationContext(), "Nothing to delete", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private int getLetterPosition(Character letter){
+        letter = Character.toUpperCase(letter);
+        int temp = (int)letter;
+        int temp_integer = 65; //for upper case
+        if(temp<=90 & temp>=65){
+            return temp-temp_integer;
+        }else {
+            return -1;
+        }
+    }
+
+    private String removeLastLetter(String text){
+        if (text.length() > 0){
+            return text.substring(0, text.length() - 1);
+        }else {
+            return "";
         }
     }
 }
