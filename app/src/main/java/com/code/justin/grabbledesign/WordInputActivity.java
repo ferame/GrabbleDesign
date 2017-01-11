@@ -1,5 +1,6 @@
 package com.code.justin.grabbledesign;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -26,7 +27,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class WordInputActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -59,6 +62,8 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
     }
 
     String dictionary;
+
+    Map<Character, Object> letterValues = new HashMap<Character, Object>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +107,7 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
         Log.i("Button Colouring", "Ends");
 
         dictionary = readRawTextFile();
+        setLetterValues();
     }
 
     @Override
@@ -424,6 +430,8 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
                 } else {
                     Toast.makeText(getApplicationContext(), "Nice", Toast.LENGTH_LONG).show();
                     addWordToUsedWords(word);
+                    updateLetterCountInDB(word);
+                    textInput.setText("");
                 }
             } else {
                 Toast.makeText(getApplicationContext(), "That's not a word", Toast.LENGTH_LONG).show();
@@ -458,10 +466,10 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
 
     private boolean isWordAlreadyUsed(String word){
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
-        userData.execSQL("CREATE TABLE IF NOT EXISTS usedwords (id INTEGER PRIMARY KEY, word VARCHAR(7))");
+        userData.execSQL("CREATE TABLE IF NOT EXISTS usedwords (id INTEGER, word VARCHAR(7), value INTEGER, PRIMARY KEY(id,word))");
 
-        String selectStringEmail = "SELECT * FROM usedwords WHERE " + "id" + " =?"+ " AND " + "word" + "=?";
-        Cursor cursor = userData.rawQuery(selectStringEmail, new String[] {Integer.toString(Player), word});
+        String selectString = "SELECT * FROM usedwords WHERE " + "id" + " =?"+ " AND " + "word" + "=?";
+        Cursor cursor = userData.rawQuery(selectString, new String[] {Integer.toString(Player), word});
 
         Boolean wordExists;
 
@@ -477,23 +485,96 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void addWordToUsedWords(String word){
+        Log.i("addWordToUsedWords", "start");
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
-        userData.execSQL("CREATE TABLE IF NOT EXISTS usedwords (id INTEGER PRIMARY KEY, word VARCHAR(7))");
-        userData.execSQL("INSERT INTO usedwords (id, word) VALUES (" + Integer.toString(Player) + ", '" + word +"')");
-
+        Log.i("addWordToUsedWords", "after first line");
+        userData.execSQL("CREATE TABLE IF NOT EXISTS usedwords (id INTEGER, word VARCHAR(7), value INTEGER, PRIMARY KEY(id,word))");
+        Log.i("addWordToUsedWords", "after second line");
+        userData.execSQL("INSERT INTO usedwords (id, word, value) VALUES (" + Integer.toString(Player) + ", '" + word +"', " + getWordValue(word)+ ")");
+        Log.i("addWordToUsedWords", "middle");
         Log.i("Player words", "start");
         Cursor c = userData.rawQuery("SELECT * FROM usedwords WHERE id = " + Integer.toString(Player), null);
         int idIndex = c.getColumnIndex("id");
         int wordIndex = c.getColumnIndex("word");
+        int valueIndex = c.getColumnIndex("value");
         c.moveToFirst();
         if(c.moveToFirst()) {
             do {
                 Log.i("id", c.getString(idIndex));
                 Log.i("word", c.getString(wordIndex));
+                Log.i("value", c.getString(valueIndex));
             } while (c.moveToNext());
         }
         c.close();
         Log.i("Player words", "end");
+        Log.i("addWordToUsedWords", "end");
         userData.close();
+    }
+
+    private Integer getWordValue(String word){
+        Integer sum = 0;
+        for (char letter : word.toCharArray()){
+            sum += Integer.parseInt(letterValues.get(letter).toString());
+        }
+        return sum;
+    }
+
+    private void updateLetterCountInDB(String word){
+        Log.i("updateLetterCountInDB", "starts");
+        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
+        String tableName = "inventory";
+        String selectStringLetter = "SELECT * FROM inventory WHERE " + "id" + " =?"+ " AND " + "letter" + "=?";
+        for (char letter : word.toCharArray()){
+            Cursor cursor = userData.rawQuery(selectStringLetter, new String[] {Integer.toString(Player), Character.toString(letter)});
+            if(cursor.moveToFirst()){
+                String cursorId = cursor.getString(cursor.getColumnIndex("id"));
+
+                String cursorLetter = cursor.getString(cursor.getColumnIndex("letter"));
+
+                Integer newAmount = lettersParam[getLetterPosition(letter)].getCount();
+
+                ContentValues newInventoryObject = new ContentValues();
+                newInventoryObject.put("id", cursorId);
+                newInventoryObject.put("letter", cursorLetter);
+                newInventoryObject.put("amount", newAmount);
+                Log.i("newObject", newInventoryObject.toString());
+
+                userData.update(tableName, newInventoryObject, "letter ='" + cursorLetter + "'" + " and id = '" + cursorId + "'", null);
+            } else {
+                Log.i("Error!!!", "updateLetterCountInDB failed");
+            }
+            cursor.close();
+        }
+        userData.close();
+        Log.i("updateLetterCountInDB", "ends");
+    }
+
+    private void setLetterValues(){
+        letterValues.put('A', 3);
+        letterValues.put('B', 20);
+        letterValues.put('C', 13);
+        letterValues.put('D', 10);
+        letterValues.put('E', 1);
+        letterValues.put('F', 15);
+        letterValues.put('G', 18);
+        letterValues.put('H', 9);
+        letterValues.put('I', 5);
+        letterValues.put('J', 25);
+        letterValues.put('K', 22);
+        letterValues.put('L', 11);
+        letterValues.put('M', 14);
+        letterValues.put('N', 6);
+        letterValues.put('O', 4);
+        letterValues.put('P', 19);
+        letterValues.put('Q', 24);
+        letterValues.put('R', 8);
+        letterValues.put('S', 7);
+        letterValues.put('T', 2);
+        letterValues.put('U', 12);
+        letterValues.put('V', 21);
+        letterValues.put('W', 17);
+        letterValues.put('X', 23);
+        letterValues.put('Y', 16);
+        letterValues.put('Z', 26);
     }
 }
