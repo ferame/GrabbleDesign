@@ -1,6 +1,7 @@
 package com.code.justin.grabbledesign;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -20,7 +21,12 @@ import android.widget.Toast;
 import com.google.android.gms.drive.query.internal.InFilter;
 import com.google.android.gms.phenotype.Flag;
 
-public class WordInputActivity extends AppCompatActivity implements View.OnClickListener{
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+public class WordInputActivity extends AppCompatActivity implements View.OnClickListener {
 
     private int Player;
 
@@ -28,24 +34,24 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
 
     Button[] buttons = new Button[28];
 
-    class Letter{
+    class Letter {
         int count;
 
-        private void setCount(int newCount){
+        private void setCount(int newCount) {
             count = newCount;
         }
 
-        private int getCount(){
+        private int getCount() {
             return count;
         }
 
         Character letter;
 
-        private void setLetter(Character newLetter){
+        private void setLetter(Character newLetter) {
             letter = newLetter;
         }
 
-        private Character getLetter(){
+        private Character getLetter() {
             return letter;
         }
     }
@@ -64,7 +70,7 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
 
 //        Button[] buttons = new Button[28];
         Integer i = 0;
-        for(char alphabet = 'A'; alphabet <= 'Z';alphabet++) {
+        for (char alphabet = 'A'; alphabet <= 'Z'; alphabet++) {
             String buttonID = alphabet + "letter";
 
             int resID = getResources().getIdentifier(buttonID, "id", getPackageName());
@@ -95,109 +101,109 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
 
             case R.id.Aletter:
                 Log.i("Keyboard", "A pressed");
-                onLetterPress('A', 0);
+                onLetterPress('A');
                 break;
 
             case R.id.Bletter:
                 Log.i("Keyboard", "B pressed");
-                onLetterPress('B', 1);
+                onLetterPress('B');
                 break;
 
             case R.id.Cletter:
                 Log.i("Keyboard", "C pressed");
-                onLetterPress('C', 2);
+                onLetterPress('C');
                 break;
 
             case R.id.Dletter:
-                onLetterPress('D', 3);
+                onLetterPress('D');
                 break;
 
             case R.id.Eletter:
-                onLetterPress('E', 4);
+                onLetterPress('E');
                 break;
 
             case R.id.Fletter:
-                onLetterPress('F', 5);
+                onLetterPress('F');
                 break;
 
             case R.id.Gletter:
-                onLetterPress('G', 6);
+                onLetterPress('G');
                 break;
 
             case R.id.Hletter:
-                onLetterPress('H', 7);
+                onLetterPress('H');
                 break;
 
             case R.id.Iletter:
-                onLetterPress('I', 8);
+                onLetterPress('I');
                 break;
 
             case R.id.Jletter:
-                onLetterPress('J', 9);
+                onLetterPress('J');
                 break;
 
             case R.id.Kletter:
-                onLetterPress('K', 10);
+                onLetterPress('K');
                 break;
 
             case R.id.Lletter:
-                onLetterPress('L', 11);
+                onLetterPress('L');
                 break;
 
             case R.id.Mletter:
-                onLetterPress('M', 12);
+                onLetterPress('M');
                 break;
 
             case R.id.Nletter:
-                onLetterPress('N', 13);
+                onLetterPress('N');
                 break;
 
             case R.id.Oletter:
-                onLetterPress('O', 14);
+                onLetterPress('O');
                 break;
 
             case R.id.Pletter:
-                onLetterPress('P', 15);
+                onLetterPress('P');
                 break;
 
             case R.id.Qletter:
-                onLetterPress('Q', 16);
+                onLetterPress('Q');
                 break;
 
             case R.id.Rletter:
-                onLetterPress('R', 17);
+                onLetterPress('R');
                 break;
 
             case R.id.Sletter:
-                onLetterPress('S', 18);
+                onLetterPress('S');
                 break;
 
             case R.id.Tletter:
-                onLetterPress('T', 19);
+                onLetterPress('T');
                 break;
 
             case R.id.Uletter:
-                onLetterPress('U', 20);
+                onLetterPress('U');
                 break;
 
             case R.id.Vletter:
-                onLetterPress('V', 21);
+                onLetterPress('V');
                 break;
 
             case R.id.Wletter:
-                onLetterPress('W', 22);
+                onLetterPress('W');
                 break;
 
             case R.id.Xletter:
-                onLetterPress('X', 23);
+                onLetterPress('X');
                 break;
 
             case R.id.Yletter:
-                onLetterPress('Y', 24);
+                onLetterPress('Y');
                 break;
 
             case R.id.Zletter:
-                onLetterPress('Z', 25);
+                onLetterPress('Z');
                 break;
 
             case R.id.backSpace1:
@@ -210,40 +216,45 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
                 backspaceAction();
                 break;
 
+            case R.id.submitWord:
+                Log.i("Keyboard", "submit pressed");
+                submitAction();
+                break;
+
             default:
                 break;
         }
     }
 
-    private int getLetterCount(char letter){
-        for (int i = 0; i < 26; i++){
-            if (lettersParam[i].getLetter() == letter){
+    private int getLetterCount(char letter) {
+        for (int i = 0; i < 26; i++) {
+            if (lettersParam[i].getLetter() == letter) {
                 return lettersParam[i].getCount();
             }
         }
         return -1;
     }
 
-    private int getLetterIndex(char letter){
-        for (int i = 0; i < 26; i++){
-            if (lettersParam[i].getLetter() == letter){
+    private int getLetterIndex(char letter) {
+        for (int i = 0; i < 26; i++) {
+            if (lettersParam[i].getLetter() == letter) {
                 return i;
             }
         }
         return -1;
     }
 
-    private void populateLettersParam(){
+    private void populateLettersParam() {
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
         String tableName = "inventory";
         String selectStringPlacemark = "SELECT * FROM " + tableName + " WHERE " + "id" + " =?";
 
-        Cursor c = userData.rawQuery(selectStringPlacemark, new String[] {Integer.toString(Player)});
+        Cursor c = userData.rawQuery(selectStringPlacemark, new String[]{Integer.toString(Player)});
         int letterIndex = c.getColumnIndex("letter");
         int amountIndex = c.getColumnIndex("amount");
         c.moveToFirst();
         Integer count = 0;
-        while (c != null){
+        while (c != null) {
             Log.i("getting letter", "ok?");
             Character letter = c.getString(letterIndex).charAt(0);
             Log.i("Found letter", letter.toString());
@@ -264,8 +275,8 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
         userData.close();
     }
 
-    private void setLetterButtonCounts(){
-        for (int i = 0; i < 26; i++){
+    private void setLetterButtonCounts() {
+        for (int i = 0; i < 26; i++) {
             Character letter = lettersParam[i].getLetter();
             Integer count = lettersParam[i].getCount();
 
@@ -278,13 +289,13 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    private void setLetterButtonColours(){
-        for (int i = 0; i < 26; i++){
+    private void setLetterButtonColours() {
+        for (int i = 0; i < 26; i++) {
             Integer count = lettersParam[i].getCount();
 
-            if (count > 3){
+            if (count > 3) {
                 buttons[i].setBackgroundResource(R.drawable.keyboard_button_border);
-            } else if ( count > 0){
+            } else if (count > 0) {
                 buttons[i].setBackgroundResource(R.drawable.keyboard_button_border_low);
             } else {
                 buttons[i].setBackgroundResource(R.drawable.keyboard_button_border_disabled);
@@ -292,15 +303,16 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    private void onLetterPress(Character letter, Integer letterIndex){
+    private void onLetterPress(Character letter) {
         int letterCount = getLetterCount(letter);
-        if (letterCount == -1){
+        int letterIndex = getLetterPosition(letter);
+        if (letterCount == -1) {
             Log.i("Error", "Letter count invalid");
-        }else if (letterCount == 0){
-            Toast.makeText(getApplicationContext(), "No "+ letter + "'s remaining", Toast.LENGTH_SHORT).show();
-        }else{
+        } else if (letterCount == 0) {
+            Toast.makeText(getApplicationContext(), "No " + letter + "'s remaining", Toast.LENGTH_SHORT).show();
+        } else {
             Boolean fullWord = checkIfSeven();
-            if (fullWord){
+            if (fullWord) {
                 Toast.makeText(getApplicationContext(), "Already 7 letters", Toast.LENGTH_LONG).show();
             } else {
                 addLetter(letter.toString());
@@ -311,41 +323,41 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    private boolean checkIfSeven(){
-        TextView textInput = (TextView)findViewById(R.id.textViewInput);
-        if (textInput.getText().length() == 7){
+    private boolean checkIfSeven() {
+        TextView textInput = (TextView) findViewById(R.id.textViewInput);
+        if (textInput.getText().length() == 7) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }
 
-    private void addLetter(String letter){
-        TextView textInput = (TextView)findViewById(R.id.textViewInput);
+    private void addLetter(String letter) {
+        TextView textInput = (TextView) findViewById(R.id.textViewInput);
         textInput.setText(textInput.getText() + letter);
     }
 
-    private void increaseLetterCount(Integer letterIndex){
+    private void increaseLetterCount(Integer letterIndex) {
         lettersParam[letterIndex].setCount(lettersParam[letterIndex].getCount() + 1);
     }
 
-    private void reduceLetterCount(Integer letterIndex){
+    private void reduceLetterCount(Integer letterIndex) {
         lettersParam[letterIndex].setCount(lettersParam[letterIndex].getCount() - 1);
     }
 
-    private void updateLetterButtonColour(Integer letterIndex){
+    private void updateLetterButtonColour(Integer letterIndex) {
         Integer count = lettersParam[letterIndex].getCount();
 
-        if (count > 3){
+        if (count > 3) {
             buttons[letterIndex].setBackgroundResource(R.drawable.keyboard_button_border);
-        } else if ( count > 0){
+        } else if (count > 0) {
             buttons[letterIndex].setBackgroundResource(R.drawable.keyboard_button_border_low);
         } else {
             buttons[letterIndex].setBackgroundResource(R.drawable.keyboard_button_border_disabled);
         }
     }
 
-    private void updateLetterCountIndex(Integer letterIndex){
+    private void updateLetterCountIndex(Integer letterIndex) {
         Character letter = lettersParam[letterIndex].getLetter();
         Integer count = lettersParam[letterIndex].getCount();
 
@@ -357,13 +369,13 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
         buttons[letterIndex].setText(showSpan);
     }
 
-    private void backspaceAction(){
-        TextView textInput = (TextView)findViewById(R.id.textViewInput);
+    private void backspaceAction() {
+        TextView textInput = (TextView) findViewById(R.id.textViewInput);
         String startText = textInput.getText().toString();
-        if (startText.length() > 0){
-            Character lastLetter = startText.charAt(startText.length()-1);
+        if (startText.length() > 0) {
+            Character lastLetter = startText.charAt(startText.length() - 1);
             Integer letterIndex = getLetterPosition(lastLetter);
-            Log.i("got position "+ letterIndex.toString(), "for" + lastLetter);
+            Log.i("got position " + letterIndex.toString(), "for" + lastLetter);
             increaseLetterCount(letterIndex);
             updateLetterButtonColour(letterIndex);
             updateLetterCountIndex(letterIndex);
@@ -373,22 +385,55 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    private int getLetterPosition(Character letter){
+    private int getLetterPosition(Character letter) {
         letter = Character.toUpperCase(letter);
-        int temp = (int)letter;
+        int temp = (int) letter;
         int temp_integer = 65; //for upper case
-        if(temp<=90 & temp>=65){
-            return temp-temp_integer;
-        }else {
+        if (temp <= 90 & temp >= 65) {
+            return temp - temp_integer;
+        } else {
             return -1;
         }
     }
 
-    private String removeLastLetter(String text){
-        if (text.length() > 0){
+    private String removeLastLetter(String text) {
+        if (text.length() > 0) {
             return text.substring(0, text.length() - 1);
-        }else {
+        } else {
             return "";
         }
     }
+
+    private void submitAction() {
+        TextView textInput = (TextView) findViewById(R.id.textViewInput);
+        String word = textInput.getText().toString();
+        if (word.length() == 7) {
+
+        } else {
+            Toast.makeText(getApplicationContext(), "It must be 7 letter word", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+//    private void loadWords() throws IOException {
+//        Log.d(TAG, "Loading words...");
+//        final Resources resources = mHelperContext.getResources();
+//        InputStream inputStream = resources.openRawResource(R.raw.grabbledictionary);
+//        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+//
+//        try {
+//            String line;
+//            while ((line = reader.readLine()) != null) {
+//                String[] strings = TextUtils.split(line, "-");
+//                if (strings.length < 2)
+//                    continue;
+//                long id = addWord(strings[0].trim(), strings[1].trim());
+//                if (id < 0) {
+//                    Log.e(TAG, "unable to add word: " + strings[0].trim());
+//                }
+//            }
+//        } finally {
+//            reader.close();
+//        }
+//        Log.d(TAG, "DONE loading words.");
+//    }
 }

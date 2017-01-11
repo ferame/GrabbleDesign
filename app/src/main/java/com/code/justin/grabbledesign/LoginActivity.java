@@ -1,15 +1,22 @@
 package com.code.justin.grabbledesign;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.app.PendingIntent.getActivity;
 
@@ -63,13 +70,22 @@ public class LoginActivity extends AppCompatActivity {
             int emailIndex = c.getColumnIndex("email");
             int passwordIndex = c.getColumnIndex("password");
             int idIndex = c.getColumnIndex("id");
-            c.moveToFirst();
+            /*c.moveToFirst();
             while (c != null){
                 Log.i("nickname", c.getString(nameIndex));
                 Log.i("email", c.getString(emailIndex));
                 Log.i("password", c.getString(passwordIndex));
                 Log.i("id", c.getString(idIndex));
                 c.moveToNext();
+            }*/
+            c.moveToFirst();
+            if(c.moveToFirst()) {
+                do {
+                    Log.i("nickname", c.getString(nameIndex));
+                    Log.i("email", c.getString(emailIndex));
+                    Log.i("password", c.getString(passwordIndex));
+                    Log.i("id", c.getString(idIndex));
+                } while (c.moveToNext());
             }
             c.close();
             userData.close();
@@ -77,6 +93,8 @@ public class LoginActivity extends AppCompatActivity {
         catch (Exception e){
             e.printStackTrace();
         }
+
+        dictionaryStatusCheck();
 
     }
 
@@ -151,5 +169,70 @@ public class LoginActivity extends AppCompatActivity {
         cursor.close();          // Dont forget to close your cursor
         userData.close();              //AND your Database!
         return hasObject;
+    }
+
+
+    private void dictionaryStatusCheck(){
+        Log.i("dictionaryStatusCheck", "started");
+        Boolean dictionaryExist = doesDictionaryExist();
+        if (!dictionaryExist){
+            List<String> words = readRawTextFile();
+            createDictionary(words);
+        }
+        Log.i("dictionaryStatusCheck", "ended");
+    }
+
+    private boolean doesDictionaryExist(){
+        Log.i("doesDictionaryExist", "started");
+        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
+        Cursor cursor = userData.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='dictionary'", new String[]{});
+
+        if(cursor!=null) {
+            if(cursor.getCount()>0) {
+                cursor.close();
+                userData.close();
+                Log.i("doesDictionaryExist", "yes, ended");
+                return true;
+            }
+            cursor.close();
+        }
+        userData.close();
+        Log.i("doesDictionaryExist", "no, ended");
+        return false;
+    }
+
+    private void createDictionary(List<String> words){
+        Log.i("createDictionary", "started");
+        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
+        userData.execSQL("CREATE TABLE IF NOT EXISTS dictionary (word VARCHAR(7) PRIMARY KEY)");
+        for (int i = 0; i < words.size(); i++) {
+//            Log.i("createDictionary", "looping");
+            userData.execSQL("INSERT INTO dictionary (word) VALUES ('" + words.get(i) + "')");
+        }
+        userData.close();
+        Log.i("createDictionary", "ended");
+    }
+
+    private List<String> readRawTextFile()
+    {
+        Log.i("readRawTextFile", "started");
+        Resources resources = getResources();
+        InputStream inputStream = resources.openRawResource(R.raw.grabbledictionary);
+
+        InputStreamReader inputreader = new InputStreamReader(inputStream);
+        BufferedReader buffreader = new BufferedReader(inputreader);
+        String line;
+
+        List<String> list = new ArrayList<String>();
+
+        try {
+            while (( line = buffreader.readLine()) != null) {
+                list.add(line);
+            }
+        } catch (IOException e) {
+            return null;
+        }
+        Log.i("readRawTextFile", "ended");
+        return list;
     }
 }
