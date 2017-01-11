@@ -25,6 +25,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WordInputActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -32,7 +34,7 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
 
     private Letter[] lettersParam = new Letter[26];
 
-    Button[] buttons = new Button[28];
+    Button[] buttons = new Button[29];
 
     class Letter {
         int count;
@@ -55,6 +57,8 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
             return letter;
         }
     }
+
+    String dictionary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +89,9 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
         buttons[27] = ((Button) findViewById(R.id.backSpace2));
         buttons[27].setOnClickListener(this);
 
+        //Setting up submit button
+        buttons[28] = ((Button) findViewById(R.id.submitWord));
+        buttons[28].setOnClickListener(this);
 
         Log.i("Button Count info", "Starts");
         setLetterButtonCounts();
@@ -93,6 +100,8 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
         Log.i("Button Colouring", "Starts");
         setLetterButtonColours();
         Log.i("Button Colouring", "Ends");
+
+        dictionary = readRawTextFile();
     }
 
     @Override
@@ -334,7 +343,8 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
 
     private void addLetter(String letter) {
         TextView textInput = (TextView) findViewById(R.id.textViewInput);
-        textInput.setText(textInput.getText() + letter);
+        String newText = textInput.getText() + letter;
+        textInput.setText(newText);
     }
 
     private void increaseLetterCount(Integer letterIndex) {
@@ -408,32 +418,82 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
         TextView textInput = (TextView) findViewById(R.id.textViewInput);
         String word = textInput.getText().toString();
         if (word.length() == 7) {
-
+            if (dictionary.contains(word)) {
+                if (isWordAlreadyUsed(word)) {
+                    Toast.makeText(getApplicationContext(), "Word already used", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Nice", Toast.LENGTH_LONG).show();
+                    addWordToUsedWords(word);
+                }
+            } else {
+                Toast.makeText(getApplicationContext(), "That's not a word", Toast.LENGTH_LONG).show();
+            }
         } else {
             Toast.makeText(getApplicationContext(), "It must be 7 letter word", Toast.LENGTH_SHORT).show();
         }
     }
 
-//    private void loadWords() throws IOException {
-//        Log.d(TAG, "Loading words...");
-//        final Resources resources = mHelperContext.getResources();
-//        InputStream inputStream = resources.openRawResource(R.raw.grabbledictionary);
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-//
-//        try {
-//            String line;
-//            while ((line = reader.readLine()) != null) {
-//                String[] strings = TextUtils.split(line, "-");
-//                if (strings.length < 2)
-//                    continue;
-//                long id = addWord(strings[0].trim(), strings[1].trim());
-//                if (id < 0) {
-//                    Log.e(TAG, "unable to add word: " + strings[0].trim());
-//                }
-//            }
-//        } finally {
-//            reader.close();
-//        }
-//        Log.d(TAG, "DONE loading words.");
-//    }
+    private String readRawTextFile()
+    {
+        Log.i("readRawTextFile", "started");
+        Resources resources = getResources();
+
+        InputStream inputStream = resources.openRawResource(R.raw.grabbledictionary);
+        InputStreamReader inputreader = new InputStreamReader(inputStream);
+        BufferedReader buffreader = new BufferedReader(inputreader);
+
+        StringBuilder wordList = new StringBuilder();
+        String line;
+        try {
+            while (( line = buffreader.readLine()) != null) {
+                wordList.append(line.toUpperCase());
+                wordList.append(",");
+            }
+        } catch (IOException e) {
+            return null;
+        }
+        Log.i("readRawTextFile", "ended");
+        return wordList.toString();
+    }
+
+    private boolean isWordAlreadyUsed(String word){
+        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
+        userData.execSQL("CREATE TABLE IF NOT EXISTS usedwords (id INTEGER PRIMARY KEY, word VARCHAR(7))");
+
+        String selectStringEmail = "SELECT * FROM usedwords WHERE " + "id" + " =?"+ " AND " + "word" + "=?";
+        Cursor cursor = userData.rawQuery(selectStringEmail, new String[] {Integer.toString(Player), word});
+
+        Boolean wordExists;
+
+        if(cursor.moveToFirst()){
+            wordExists = true;
+        } else {
+            wordExists = false;
+        }
+
+        cursor.close();
+        userData.close();
+        return wordExists;
+    }
+
+    private void addWordToUsedWords(String word){
+        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
+        userData.execSQL("CREATE TABLE IF NOT EXISTS usedwords (id INTEGER PRIMARY KEY, word VARCHAR(7))");
+        userData.execSQL("INSERT INTO usedwords (id, word) VALUES (" + Integer.toString(Player) + ", '" + word +"')");
+
+        Log.i("Player words", "start");
+        Cursor c = userData.rawQuery("SELECT * FROM usedwords WHERE id = " + Integer.toString(Player), null);
+        int idIndex = c.getColumnIndex("id");
+        int wordIndex = c.getColumnIndex("word");
+        c.moveToFirst();
+        if(c.moveToFirst()) {
+            do {
+                Log.i("id", c.getString(idIndex));
+                Log.i("word", c.getString(wordIndex));
+            } while (c.moveToNext());
+        }
+        c.close();
+        Log.i("Player words", "end");
+        userData.close();
+    }
 }

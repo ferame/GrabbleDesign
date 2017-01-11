@@ -94,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        dictionaryStatusCheck();
+//        dictionaryStatusCheck();
 
     }
 
@@ -172,67 +172,44 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    private void dictionaryStatusCheck(){
-        Log.i("dictionaryStatusCheck", "started");
-        Boolean dictionaryExist = doesDictionaryExist();
-        if (!dictionaryExist){
-            List<String> words = readRawTextFile();
-            createDictionary(words);
-        }
-        Log.i("dictionaryStatusCheck", "ended");
-    }
-
-    private boolean doesDictionaryExist(){
-        Log.i("doesDictionaryExist", "started");
-        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
-        Cursor cursor = userData.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='dictionary'", new String[]{});
-
-        if(cursor!=null) {
-            if(cursor.getCount()>0) {
-                cursor.close();
-                userData.close();
-                Log.i("doesDictionaryExist", "yes, ended");
-                return true;
-            }
-            cursor.close();
-        }
-        userData.close();
-        Log.i("doesDictionaryExist", "no, ended");
-        return false;
-    }
-
-    private void createDictionary(List<String> words){
-        Log.i("createDictionary", "started");
-        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
-        userData.execSQL("CREATE TABLE IF NOT EXISTS dictionary (word VARCHAR(7) PRIMARY KEY)");
-        for (int i = 0; i < words.size(); i++) {
-//            Log.i("createDictionary", "looping");
-            userData.execSQL("INSERT INTO dictionary (word) VALUES ('" + words.get(i) + "')");
-        }
-        userData.close();
-        Log.i("createDictionary", "ended");
-    }
-
-    private List<String> readRawTextFile()
-    {
-        Log.i("readRawTextFile", "started");
-        Resources resources = getResources();
-        InputStream inputStream = resources.openRawResource(R.raw.grabbledictionary);
-
-        InputStreamReader inputreader = new InputStreamReader(inputStream);
-        BufferedReader buffreader = new BufferedReader(inputreader);
-        String line;
-
-        List<String> list = new ArrayList<String>();
-
-        try {
-            while (( line = buffreader.readLine()) != null) {
-                list.add(line);
-            }
-        } catch (IOException e) {
-            return null;
-        }
-        Log.i("readRawTextFile", "ended");
-        return list;
-    }
+//    private void dictionaryStatusCheck(){
+//        Log.i("dictionaryStatusCheck", "started");
+//        Boolean dictionaryExist = doesDictionaryExist();
+//        if (!dictionaryExist){
+//            List<String> words = readRawTextFile();
+//            createDictionary(words);
+//        }
+//        Log.i("dictionaryStatusCheck", "ended");
+//    }
+//
+//    private boolean doesDictionaryExist(){
+//        Log.i("doesDictionaryExist", "started");
+//        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
+//        Cursor cursor = userData.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='dictionary'", new String[]{});
+//
+//        if(cursor!=null) {
+//            if(cursor.getCount()>0) {
+//                cursor.close();
+//                userData.close();
+//                Log.i("doesDictionaryExist", "yes, ended");
+//                return true;
+//            }
+//            cursor.close();
+//        }
+//        userData.close();
+//        Log.i("doesDictionaryExist", "no, ended");
+//        return false;
+//    }
+//
+//    private void createDictionary(List<String> words){
+//        Log.i("createDictionary", "started");
+//        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
+//        userData.execSQL("CREATE TABLE IF NOT EXISTS dictionary (word VARCHAR(7) PRIMARY KEY)");
+//        for (int i = 0; i < words.size(); i++) {
+////            Log.i("createDictionary", "looping");
+//            userData.execSQL("INSERT INTO dictionary (word) VALUES ('" + words.get(i) + "')");
+//        }
+//        userData.close();
+//        Log.i("createDictionary", "ended");
+//    }
 }
