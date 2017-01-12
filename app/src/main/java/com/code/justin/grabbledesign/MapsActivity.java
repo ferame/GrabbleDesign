@@ -83,8 +83,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Log.d("onMapReady", "starts");
         mMap = googleMap;
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+//        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         try {
             // Customise the styling of the base map using a JSON object defined
             // in a raw resource file.
@@ -100,8 +101,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         setMarkerClickListener(mMap);
 
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        mMap.setMyLocationEnabled(true);
+        //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+//        Log.d("starting", "setMyLocationEnabled");
+//        if (Build.VERSION.SDK_INT < 23) {
+//            mMap.setMyLocationEnabled(true);
+//        }
+//        Log.d("finishing", "setMyLocationEnabled");
         DownloadTask task = new DownloadTask();
         KmlLayer returnedLayer = null;
         try {
@@ -138,21 +143,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onProviderDisabled(String s) {
 
             }
+
         };
 
         if (Build.VERSION.SDK_INT < 23) {
-
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
-        } else {
+            Log.i("Button to center", "start");
+            mMap.setMyLocationEnabled(true);
+            Log.i("Button to center", "end");
 
+            Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (lastKnownLocation != null) {
+                LatLng userLocation = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(userLocation));
+            }
+
+        } else {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
             } else {
-
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+
+                Log.i("Button to center", "start");
+                mMap.setMyLocationEnabled(true);
+                Log.i("Button to center", "end");
 
                 Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 if (lastKnownLocation != null) {
@@ -161,6 +178,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         }
+        Log.d("onMapReady", "ends");
     }
 
     public class DownloadTask extends AsyncTask<String, Void, KmlLayer> {
@@ -289,7 +307,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     {
 
                         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                        Log.i("Button to center", "start");
+                        mMap.setMyLocationEnabled(true);
+                        Log.i("Button to center", "end");
 
+                        Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        if (lastKnownLocation != null) {
+                            LatLng userLocation = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+                            mMap.moveCamera(CameraUpdateFactory.newLatLng(userLocation));
+                        }
                     }
 
                 }
@@ -299,6 +325,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
     }
+
 
     public void findNearbyLetters(Location userLocation) {
         Log.i(TAG, "findNearbyLetters");
