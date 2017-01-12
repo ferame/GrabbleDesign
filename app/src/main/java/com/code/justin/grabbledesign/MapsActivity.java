@@ -562,6 +562,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void toInventoryActivity(View view){
         Intent intent = new Intent(getApplicationContext(), InventoryActivity.class);
+        intent.putExtra("userId", Integer.toString(Player));
         startActivity(intent);
     }
 
