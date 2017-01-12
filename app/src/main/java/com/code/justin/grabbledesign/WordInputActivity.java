@@ -68,11 +68,11 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_word_input);
         Intent intent = getIntent();
         Player = Integer.parseInt(intent.getStringExtra("userId"));
 
+        setLetterValues();
         Log.i("Populate", "Starts");
         populateLettersParam();
         Log.i("Populate", "Ends");
@@ -99,7 +99,9 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
         buttons[28].setOnClickListener(this);
 
         Log.i("Button Count info", "Starts");
-        setLetterButtonCounts();
+        setLetterButtonCountsWITHLETTERSCORES();
+//        WITHLETTERSCORES
+//        setLetterButtonCounts();
         Log.i("Button Count info", "Ends");
 
         Log.i("Button Colouring", "Starts");
@@ -107,7 +109,6 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
         Log.i("Button Colouring", "Ends");
 
         dictionary = readRawTextFile();
-        setLetterValues();
     }
 
     @Override
@@ -290,12 +291,26 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
         userData.close();
     }
 
-    private void setLetterButtonCounts() {
+//    private void setLetterButtonCounts() {
+//        for (int i = 0; i < 26; i++) {
+//            Character letter = lettersParam[i].getLetter();
+//            Integer count = lettersParam[i].getCount();
+//
+//            String toShow = letter + count.toString();
+//            SpannableStringBuilder showSpan = new SpannableStringBuilder(toShow);
+//            showSpan.setSpan(new SuperscriptSpan(), 1, showSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//            showSpan.setSpan(new RelativeSizeSpan(0.7f), 1, showSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//
+//            buttons[i].setText(showSpan);
+//        }
+//    }
+
+    private void setLetterButtonCountsWITHLETTERSCORES() {
         for (int i = 0; i < 26; i++) {
             Character letter = lettersParam[i].getLetter();
             Integer count = lettersParam[i].getCount();
 
-            String toShow = letter + count.toString();
+            String toShow = letter + letterValues.get(letter).toString();
             SpannableStringBuilder showSpan = new SpannableStringBuilder(toShow);
             showSpan.setSpan(new SuperscriptSpan(), 1, showSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             showSpan.setSpan(new RelativeSizeSpan(0.7f), 1, showSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -333,7 +348,8 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
                 addLetter(letter.toString());
                 reduceLetterCount(letterIndex);
                 updateLetterButtonColour(letterIndex);
-                updateLetterCountIndex(letterIndex);
+//                WITHLETTERSCORES
+//                updateLetterCountIndex(letterIndex);
             }
         }
     }
@@ -372,7 +388,7 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
             buttons[letterIndex].setBackgroundResource(R.drawable.keyboard_button_border_disabled);
         }
     }
-
+//  WITHLETTERSCORES
     private void updateLetterCountIndex(Integer letterIndex) {
         Character letter = lettersParam[letterIndex].getLetter();
         Integer count = lettersParam[letterIndex].getCount();
@@ -394,7 +410,8 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
             Log.i("got position " + letterIndex.toString(), "for" + lastLetter);
             increaseLetterCount(letterIndex);
             updateLetterButtonColour(letterIndex);
-            updateLetterCountIndex(letterIndex);
+//            WITHLETTERSCORES
+//            updateLetterCountIndex(letterIndex);
             textInput.setText(removeLastLetter(startText));
         } else {
             Toast.makeText(getApplicationContext(), "Nothing to delete", Toast.LENGTH_SHORT).show();
