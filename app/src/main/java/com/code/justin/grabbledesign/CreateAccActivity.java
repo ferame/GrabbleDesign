@@ -58,6 +58,7 @@ public class CreateAccActivity extends AppCompatActivity {
         if (checkInputs(nicknameInput, emailInput, passwordInput)){
             userData.execSQL("INSERT INTO accounts (nickname, email, password) VALUES ('" + nicknameInput + "', '" +  emailInput + "', '" + passwordInput +"')");
             createUserInventoryTable(findUserId(nicknameInput));
+            createUserSettingsTable(findUserId(nicknameInput));
             Log.i("user creation", "done, should be.");
         } else {
             userData.close();
@@ -180,8 +181,8 @@ public class CreateAccActivity extends AppCompatActivity {
 
     public void createUserSettingsTable(Integer idInput){
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
-        userData.execSQL("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, nightMode boolean, powerSaving boolean, autoCollect boolean, superLetter boolean, visibilityRad INTEGER, overlay INTEGER))");
-        userData.execSQL("INSERT INTO settings (id, nightMode, powerSaving, autoCollect, superletter, visibilityRad, overlay) VALUES (" + idInput + ", false, false, false, false, 50, 1)");
+        userData.execSQL("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, nightMode boolean, powerSaving boolean, autoCollect boolean, superLetter boolean, visibilityRad INTEGER, overlay INTEGER)");
+        userData.execSQL("INSERT INTO settings (id, nightMode, powerSaving, autoCollect, superLetter, visibilityRad, overlay) VALUES (" + idInput + ", " + 0 + ", " + 0 + ", " + 0 + ", " + 0 + ", " + 50 +", " + 1 +")");
         userData.close();
     }
 

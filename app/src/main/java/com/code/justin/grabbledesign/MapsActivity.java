@@ -568,6 +568,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void toSettingsActivity(View view){
         Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+        intent.putExtra("userId", Integer.toString(player));
         startActivity(intent);
     }
 

@@ -1,5 +1,6 @@
 package com.code.justin.grabbledesign;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,6 +12,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
+import android.widget.Switch;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -37,17 +40,45 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void setBooleanOptions(){
+        Switch nightModeSwitch = (Switch) findViewById(R.id.nightMode);
+        nightModeSwitch.setChecked(getCurrentBoolSetting("nightMode"));
 
+        Switch powerSavingSwitch = (Switch) findViewById(R.id.powerSaving);
+        powerSavingSwitch.setChecked(getCurrentBoolSetting("powerSaving"));
+
+        Switch autoCollectSwitch = (Switch) findViewById(R.id.autoCollect);
+        autoCollectSwitch.setChecked(getCurrentBoolSetting("autoCollect"));
+
+        Switch superLetterSwitch = (Switch) findViewById(R.id.superLetter);
+        superLetterSwitch.setChecked(getCurrentBoolSetting("superLetter"));
     }
 
     private void setIntegerOptions(){
+        setSlider();
+        setSelectedLayout();
+    }
 
+    private void setSlider(){
+        int visibilityRad = getCurrentIntSetting("visibilityRad");
+        SeekBar radiusSlider = (SeekBar) findViewById(R.id.radiusSlider);
+        radiusSlider.setProgress(visibilityRad);
+    }
+
+    private void setSelectedLayout(){
+        int overlayID = getCurrentIntSetting("overlay");
+        String imageID = "img" + overlayID;
+        int resID = getResources().getIdentifier(imageID, "id", getPackageName());
+        ImageView img = (ImageView) findViewById(resID);
+        Log.i("the image id is", imageID);
+        String imageIDclicked = "img" + overlayID + "small_clicked";
+        int resIDclicked = getResources().getIdentifier(imageIDclicked, "drawable", getPackageName());
+        img.setImageResource(resIDclicked);
     }
 
     private boolean getCurrentBoolSetting(String settingType) {
 
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
-        userData.execSQL("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, nightMode boolean, powerSaving boolean, autoCollect boolean, superLetter boolean, visibilityRad INTEGER, overlay INTEGER))");
+        userData.execSQL("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, nightMode boolean, powerSaving boolean, autoCollect boolean, superLetter boolean, visibilityRad INTEGER, overlay INTEGER)");
 
         String selectString = "SELECT * FROM settings WHERE " + "id" + " =?";
         Cursor cursor = userData.rawQuery(selectString, new String[]{Integer.toString(player)});
@@ -68,7 +99,7 @@ public class SettingsActivity extends AppCompatActivity {
     private int getCurrentIntSetting(String settingType) {
 
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
-        userData.execSQL("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, nightMode boolean, powerSaving boolean, autoCollect boolean, superLetter boolean, visibilityRad INTEGER, overlay INTEGER))");
+        userData.execSQL("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, nightMode boolean, powerSaving boolean, autoCollect boolean, superLetter boolean, visibilityRad INTEGER, overlay INTEGER)");
 
         String selectString = "SELECT * FROM settings WHERE " + "id" + " =?";
         Cursor cursor = userData.rawQuery(selectString, new String[]{Integer.toString(player)});
