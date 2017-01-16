@@ -115,16 +115,19 @@
             android:orientation="horizontal">
             <ImageView
                 android:id="@+id/img2"
+                android:onClick="layoutClick"
                 android:layout_width="160dp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/img2small"/>
             <ImageView
                 android:id="@+id/img1"
+                android:onClick="layoutClick"
                 android:layout_width="160dp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/img1small"/>
             <ImageView
                 android:id="@+id/img3"
+                android:onClick="layoutClick"
                 android:layout_width="160dp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/img3small"/>

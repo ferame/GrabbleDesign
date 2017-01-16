@@ -10,14 +10,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Switch;
+import android.widget.Toast;
 
 public class SettingsActivity extends AppCompatActivity {
 
     private int player;
+
+    Toast currentToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,14 +33,17 @@ public class SettingsActivity extends AppCompatActivity {
         setBooleanOptions();
         setIntegerOptions();
 
-        //Function to get current player settings
-        //getCurrentSettings();
-        //Check if Auto letter collection is enabled, if yes - set the switch to TRUE, else, set switch to false
-        //Check if daily super letter is enabled, if yes - set the switch to TRUE, else, set switch to false
+        setSwitchesListeners();
+        setSliderListener();
+        setLayoutListeners();
         //Night mode as another layout that you can select in the HorizontalScrollView of layouts
         //Function to check which layout is selected at the moment and set the img_clicked on the right layout
-
         //Visibility radius
+
+        //Add listeners for switches
+        //Add listeners for slider
+        //Add onclickfor layouts
+
     }
 
     private void setBooleanOptions(){
@@ -56,6 +63,106 @@ public class SettingsActivity extends AppCompatActivity {
     private void setIntegerOptions(){
         setSlider();
         setSelectedLayout();
+    }
+
+    private void setSwitchesListeners(){
+        Switch nightModeSwitch = (Switch)  findViewById(R.id.nightMode);
+        nightModeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.v("NightMode Switch State=", ""+isChecked);
+            }
+        });
+
+        Switch powerSavingSwitch = (Switch)  findViewById(R.id.powerSaving);
+        powerSavingSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.v("PowerSave Switch State=", ""+isChecked);
+            }
+        });
+
+        Switch autoCollectSwitch = (Switch)  findViewById(R.id.autoCollect);
+        autoCollectSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.v("autoColl Switch State=", ""+isChecked);
+            }
+        });
+
+        Switch superLetterSwitch = (Switch)  findViewById(R.id.superLetter);
+        superLetterSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.v("superLett Switch State=", ""+isChecked);
+            }
+        });
+    }
+
+    private void setSliderListener(){
+        final SeekBar radiusSlider=(SeekBar) findViewById(R.id.radiusSlider);
+        radiusSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // TODO Auto-generated method stub
+                showToast("Visibility radius set to " + String.valueOf(progress) + "m");
+            }
+        });
+    }
+
+    private void showToast(String text)
+    {
+        if(currentToast == null)
+        {
+            currentToast = Toast.makeText(this, text, Toast.LENGTH_LONG);
+        }
+
+        currentToast.setText(text);
+        currentToast.setDuration(Toast.LENGTH_LONG);
+        currentToast.show();
+    }
+
+    private void setLayoutListeners(){
+        ImageView img1 = (ImageView) findViewById(R.id.img1);
+        ImageView img2 = (ImageView) findViewById(R.id.img2);
+        ImageView img3 = (ImageView) findViewById(R.id.img3);
+
+        View.OnClickListener layoutClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.img1:
+                        Log.i("Image pressed:", "first");
+//                        changeSelectedLayout(1);
+                        break;
+
+                    case R.id.img2:
+                        Log.i("Image pressed:", "second");
+//                        changeSelectedLayout(2);
+                        break;
+
+                    case R.id.img3:
+                        Log.i("Image pressed:", "third");
+//                        changeSelectedLayout(3);
+                        break;
+                }
+            }
+        };
+
+        img1.setOnClickListener(layoutClick);
+        img2.setOnClickListener(layoutClick);
+        img3.setOnClickListener(layoutClick);
     }
 
     private void setSlider(){
@@ -126,6 +233,5 @@ public class SettingsActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
         startActivity(intent);
     }
-
 
 }
