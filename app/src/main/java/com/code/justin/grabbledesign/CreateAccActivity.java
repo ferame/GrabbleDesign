@@ -181,8 +181,8 @@ public class CreateAccActivity extends AppCompatActivity {
 
     public void createUserSettingsTable(Integer idInput){
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
-        userData.execSQL("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, nightMode boolean, powerSaving boolean, autoCollect boolean, superLetter boolean, visibilityRad INTEGER, overlay INTEGER)");
-        userData.execSQL("INSERT INTO settings (id, nightMode, powerSaving, autoCollect, superLetter, visibilityRad, overlay) VALUES (" + idInput + ", " + 0 + ", " + 0 + ", " + 0 + ", " + 0 + ", " + 50 +", " + 1 +")");
+        userData.execSQL("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, nightMode boolean, powerSaving boolean, autoCollect boolean, superLetter boolean, visibilityRad INTEGER, overlay INTEGER, lastUse varchar(20))");
+        userData.execSQL("INSERT INTO settings (id, nightMode, powerSaving, autoCollect, superLetter, visibilityRad, overlay, lastUse) VALUES (" + idInput + ", " + 0 + ", " + 0 + ", " + 0 + ", " + 0 + ", " + 50 +", " + 1 + ", " + "9999-99-99" + ")");
         userData.close();
     }
 

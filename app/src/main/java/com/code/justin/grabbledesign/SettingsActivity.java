@@ -1,5 +1,6 @@
 package com.code.justin.grabbledesign;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -66,6 +67,8 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Log.v("NightMode Switch State=", ""+isChecked);
+                //Set user nightMode parameter to isChecked
+                updateUserSettings("nightMode", getBinary(isChecked));
             }
         });
 
@@ -74,6 +77,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Log.v("PowerSave Switch State=", ""+isChecked);
+                updateUserSettings("powerSaving", getBinary(isChecked));
             }
         });
 
@@ -82,6 +86,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Log.v("autoColl Switch State=", ""+isChecked);
+                updateUserSettings("autoCollect", getBinary(isChecked));
             }
         });
 
@@ -90,8 +95,85 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Log.v("superLett Switch State=", ""+isChecked);
+                updateUserSettings("superLetter", getBinary(isChecked));
             }
         });
+    }
+
+    private int getBinary(Boolean isChecked){
+        if (isChecked){
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+    private void updateUserSettings(String setting, int newValue){
+        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
+        String tableName = "settings";
+        String selectStringLetter = "SELECT * FROM " + tableName + " WHERE " + "id" + " =?";
+
+        Cursor cursor = userData.rawQuery(selectStringLetter, new String[] {Integer.toString(player)});
+
+        if(cursor.moveToFirst()){
+            cursor.moveToFirst();
+            String cursorId = cursor.getString(cursor.getColumnIndex("id"));
+            String cursorNightMode = cursor.getString(cursor.getColumnIndex("nightMode"));
+            String cursorPowerSaving = cursor.getString(cursor.getColumnIndex("powerSaving"));
+            String cursorAutoCollect = cursor.getString(cursor.getColumnIndex("autoCollect"));
+            String cursorSuperLetter = cursor.getString(cursor.getColumnIndex("superLetter"));
+            String cursorVisibilityRad = cursor.getString(cursor.getColumnIndex("visibilityRad"));
+            String cursorOverlay = cursor.getString(cursor.getColumnIndex("overlay"));
+            String cursorLastUse = cursor.getString(cursor.getColumnIndex("lastUse"));
+
+            ContentValues newObject = new ContentValues();
+            newObject.put("id", cursorId);
+
+            if (setting == "nightMode"){
+                newObject.put("nightMode", newValue);
+            }else{
+                newObject.put("nightMode", cursorNightMode);
+            }
+
+            if (setting == "powerSaving"){
+                newObject.put("powerSaving", newValue);
+            }else{
+                newObject.put("powerSaving", cursorPowerSaving);
+            }
+
+            if (setting == "autoCollect"){
+                newObject.put("autoCollect", newValue);
+            }else{
+                newObject.put("autoCollect", cursorAutoCollect);
+            }
+
+            if (setting == "superLetter"){
+                newObject.put("superLetter", newValue);
+            }else{
+                newObject.put("superLetter", cursorSuperLetter);
+            }
+
+            if (setting == "visibilityRad"){
+                newObject.put("visibilityRad", newValue);
+            }else{
+                newObject.put("visibilityRad", cursorVisibilityRad);
+            }
+
+            if (setting == "overlay"){
+                newObject.put("overlay", newValue);
+            }else{
+                newObject.put("overlay", cursorOverlay);
+            }
+
+            newObject.put("lastUse", cursorLastUse);
+            Log.i("newObject", newObject.toString());
+
+            userData.update(tableName, newObject, "id = '" + cursorId + "'", null);
+
+        } else {
+            Log.i("Error!!!", "updateUserSetting failed");
+        }
+        cursor.close();
+        userData.close();
     }
 
     private void setSliderListener(){
@@ -103,6 +185,7 @@ public class SettingsActivity extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 int position = seekBar.getProgress();
                 Log.i("Visibility radius", Integer.toString(position));
+                updateUserSettings("visibilityRad", position);
             }
 
             @Override
@@ -148,16 +231,19 @@ public class SettingsActivity extends AppCompatActivity {
                 case R.id.img1:
                     Log.i("Image pressed:", "first");
 //                        changeSelectedLayout(1);
+                    updateUserSettings("overlay", 1);
                     break;
 
                 case R.id.img2:
                     Log.i("Image pressed:", "second");
 //                        changeSelectedLayout(2);
+                    updateUserSettings("overlay", 2);
                     break;
 
                 case R.id.img3:
                     Log.i("Image pressed:", "third");
 //                        changeSelectedLayout(3);
+                    updateUserSettings("overlay", 3);
                     break;
             }
         }
@@ -224,11 +310,13 @@ public class SettingsActivity extends AppCompatActivity {
 
     public void toChangePassActivity(View view) {
         Intent intent = new Intent(getApplicationContext(), ChangePassActivity.class);
+        intent.putExtra("userId", Integer.toString(player));
         startActivity(intent);
     }
 
     public void toMapsActivity(View view) {
         Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+        intent.putExtra("userId", Integer.toString(player));
         startActivity(intent);
     }
 
