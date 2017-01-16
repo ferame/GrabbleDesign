@@ -65,7 +65,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ArrayList<Marker> allMarkers = new ArrayList<>();
     private ArrayList<Marker> usedMarkers = new ArrayList<>();
 
-    private int Player;
+    private int player;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,8 +77,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
         Intent intent = getIntent();
-        Player = Integer.parseInt(intent.getStringExtra("userId"));
-        Log.i("MAPS ACTIVITY PLAYER:", String.valueOf(Player));
+        player = Integer.parseInt(intent.getStringExtra("userId"));
+        Log.i("MAPS ACTIVITY Player:", String.valueOf(player));
     }
 
     @Override
@@ -252,7 +252,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String tableName = "placemarks";
         String selectStringPlacemark = "SELECT * FROM " + tableName + " WHERE " + "id" + " =?";
 
-        Cursor c = userData.rawQuery(selectStringPlacemark, new String[] {Integer.toString(Player)});
+        Cursor c = userData.rawQuery(selectStringPlacemark, new String[] {Integer.toString(player)});
         //Cursor c = userData.rawQuery(selectStringPlacemark, null);
         int placemarkIdIndex = c.getColumnIndex("placemarkID");
         int pointLatIndex = c.getColumnIndex("pointLat");
@@ -361,7 +361,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             String toMod = point.getGeometry().toString();
             Double pointLat = Double.parseDouble(toMod.split("\\(")[1].split(",")[0]);
             Double pointLng = Double.parseDouble(toMod.split(",")[1].split("\\)")[0]);
-            userData.execSQL("INSERT INTO placemarks (id, placemarkID, pointLat, pointLng, superLetter, letter, collected) VALUES ('" + Integer.toString(Player) + "', '" + pointID + "', '" + pointLat + "', '" + pointLng + "', '" + "false" + "', '" + pointLetter + "', '" + "false" + "')");
+            userData.execSQL("INSERT INTO placemarks (id, placemarkID, pointLat, pointLng, superLetter, letter, collected) VALUES ('" + Integer.toString(player) + "', '" + pointID + "', '" + pointLat + "', '" + pointLng + "', '" + "false" + "', '" + pointLetter + "', '" + "false" + "')");
         }
         userData.close();
     }
@@ -376,7 +376,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String tableName = "placemarks";
         String selectStringPlacemark = "SELECT * FROM " + tableName + " WHERE " + "id" + " =?"+ " AND " + "placemarkID" + "=?";
 
-        Cursor cursor = userData.rawQuery(selectStringPlacemark, new String[] {Integer.toString(Player), tag});
+        Cursor cursor = userData.rawQuery(selectStringPlacemark, new String[] {Integer.toString(player), tag});
 
         Boolean pressedBefore;
 
@@ -459,7 +459,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String tableName = "inventory";
         String selectStringLetter = "SELECT * FROM " + tableName + " WHERE " + "id" + " =?"+ " AND " + "letter" + "=?";
 
-        Cursor cursor = userData.rawQuery(selectStringLetter, new String[] {Integer.toString(Player), letter});
+        Cursor cursor = userData.rawQuery(selectStringLetter, new String[] {Integer.toString(player), letter});
 
         if(cursor.moveToFirst()){
 
@@ -562,7 +562,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void toInventoryActivity(View view){
         Intent intent = new Intent(getApplicationContext(), InventoryActivity.class);
-        intent.putExtra("userId", Integer.toString(Player));
+        intent.putExtra("userId", Integer.toString(player));
         startActivity(intent);
     }
 
@@ -573,7 +573,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void toWordInputActivity(View view){
         Intent intent = new Intent(getApplicationContext(), WordInputActivity.class);
-        intent.putExtra("userId", Integer.toString(Player));
+        intent.putExtra("userId", Integer.toString(player));
         startActivity(intent);
     }
 }

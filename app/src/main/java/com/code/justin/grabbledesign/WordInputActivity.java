@@ -33,7 +33,7 @@ import java.util.Map;
 
 public class WordInputActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private int Player;
+    private int player;
 
     private Letter[] lettersParam = new Letter[26];
 
@@ -70,7 +70,7 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_word_input);
         Intent intent = getIntent();
-        Player = Integer.parseInt(intent.getStringExtra("userId"));
+        player = Integer.parseInt(intent.getStringExtra("userId"));
 
         setLetterValues();
         Log.i("Populate", "Starts");
@@ -265,7 +265,7 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
         String tableName = "inventory";
         String selectStringPlacemark = "SELECT * FROM " + tableName + " WHERE " + "id" + " =?";
 
-        Cursor c = userData.rawQuery(selectStringPlacemark, new String[]{Integer.toString(Player)});
+        Cursor c = userData.rawQuery(selectStringPlacemark, new String[]{Integer.toString(player)});
         int letterIndex = c.getColumnIndex("letter");
         int amountIndex = c.getColumnIndex("amount");
         c.moveToFirst();
@@ -486,7 +486,7 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
         userData.execSQL("CREATE TABLE IF NOT EXISTS usedwords (id INTEGER, word VARCHAR(7), value INTEGER, PRIMARY KEY(id,word))");
 
         String selectString = "SELECT * FROM usedwords WHERE " + "id" + " =?"+ " AND " + "word" + "=?";
-        Cursor cursor = userData.rawQuery(selectString, new String[] {Integer.toString(Player), word});
+        Cursor cursor = userData.rawQuery(selectString, new String[] {Integer.toString(player), word});
 
         Boolean wordExists;
 
@@ -507,10 +507,10 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
         Log.i("addWordToUsedWords", "after first line");
         userData.execSQL("CREATE TABLE IF NOT EXISTS usedwords (id INTEGER, word VARCHAR(7), value INTEGER, PRIMARY KEY(id,word))");
         Log.i("addWordToUsedWords", "after second line");
-        userData.execSQL("INSERT INTO usedwords (id, word, value) VALUES (" + Integer.toString(Player) + ", '" + word +"', " + getWordValue(word)+ ")");
+        userData.execSQL("INSERT INTO usedwords (id, word, value) VALUES (" + Integer.toString(player) + ", '" + word +"', " + getWordValue(word)+ ")");
         Log.i("addWordToUsedWords", "middle");
-        Log.i("Player words", "start");
-        Cursor c = userData.rawQuery("SELECT * FROM usedwords WHERE id = " + Integer.toString(Player), null);
+        Log.i("player words", "start");
+        Cursor c = userData.rawQuery("SELECT * FROM usedwords WHERE id = " + Integer.toString(player), null);
         int idIndex = c.getColumnIndex("id");
         int wordIndex = c.getColumnIndex("word");
         int valueIndex = c.getColumnIndex("value");
@@ -523,7 +523,7 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
             } while (c.moveToNext());
         }
         c.close();
-        Log.i("Player words", "end");
+        Log.i("player words", "end");
         Log.i("addWordToUsedWords", "end");
         userData.close();
     }
@@ -542,7 +542,7 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
         String tableName = "inventory";
         String selectStringLetter = "SELECT * FROM inventory WHERE " + "id" + " =?"+ " AND " + "letter" + "=?";
         for (char letter : word.toCharArray()){
-            Cursor cursor = userData.rawQuery(selectStringLetter, new String[] {Integer.toString(Player), Character.toString(letter)});
+            Cursor cursor = userData.rawQuery(selectStringLetter, new String[] {Integer.toString(player), Character.toString(letter)});
             if(cursor.moveToFirst()){
                 String cursorId = cursor.getString(cursor.getColumnIndex("id"));
 

@@ -18,7 +18,7 @@ import java.util.ArrayList;
 // some guidance https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
 public class InventoryActivity extends AppCompatActivity {
 
-    private int Player;
+    private int player;
 
     public class OneLine {
         public String word;
@@ -40,7 +40,7 @@ public class InventoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_inventory);
 
         Intent intent = getIntent();
-        Player = Integer.parseInt(intent.getStringExtra("userId"));
+        player = Integer.parseInt(intent.getStringExtra("userId"));
 
         // Create the adapter to convert the array to views
         LinesAdapter adapter = new LinesAdapter(this, arrayOfoneLines);
@@ -81,7 +81,7 @@ public class InventoryActivity extends AppCompatActivity {
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
         userData.execSQL("CREATE TABLE IF NOT EXISTS usedwords (id INTEGER, word VARCHAR(7), value INTEGER, PRIMARY KEY(id,word))");
 
-        Cursor c = userData.rawQuery("SELECT * FROM usedwords WHERE id = " + Integer.toString(Player), null);
+        Cursor c = userData.rawQuery("SELECT * FROM usedwords WHERE id = " + Integer.toString(player), null);
         int wordIndex = c.getColumnIndex("word");
         int valueIndex = c.getColumnIndex("value");
 
@@ -117,6 +117,7 @@ public class InventoryActivity extends AppCompatActivity {
 
     public void toMapsActivity(View view){
         Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+        intent.putExtra("userId", Integer.toString(player));
         startActivity(intent);
     }
 }
