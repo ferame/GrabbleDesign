@@ -39,11 +39,6 @@ public class SettingsActivity extends AppCompatActivity {
         //Night mode as another layout that you can select in the HorizontalScrollView of layouts
         //Function to check which layout is selected at the moment and set the img_clicked on the right layout
         //Visibility radius
-
-        //Add listeners for switches
-        //Add listeners for slider
-        //Add onclickfor layouts
-
     }
 
     private void setBooleanOptions(){
@@ -106,6 +101,8 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 // TODO Auto-generated method stub
+                int position = seekBar.getProgress();
+                Log.i("Visibility radius", Integer.toString(position));
             }
 
             @Override
@@ -117,6 +114,7 @@ public class SettingsActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Auto-generated method stub
                 showToast("Visibility radius set to " + String.valueOf(progress) + "m");
+                //Log.i("Visibility radius", String.valueOf(progress)+"m");
             }
         });
     }
@@ -138,32 +136,32 @@ public class SettingsActivity extends AppCompatActivity {
         ImageView img2 = (ImageView) findViewById(R.id.img2);
         ImageView img3 = (ImageView) findViewById(R.id.img3);
 
-        View.OnClickListener layoutClick = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch (v.getId()) {
-                    case R.id.img1:
-                        Log.i("Image pressed:", "first");
-//                        changeSelectedLayout(1);
-                        break;
-
-                    case R.id.img2:
-                        Log.i("Image pressed:", "second");
-//                        changeSelectedLayout(2);
-                        break;
-
-                    case R.id.img3:
-                        Log.i("Image pressed:", "third");
-//                        changeSelectedLayout(3);
-                        break;
-                }
-            }
-        };
-
         img1.setOnClickListener(layoutClick);
         img2.setOnClickListener(layoutClick);
         img3.setOnClickListener(layoutClick);
     }
+
+    View.OnClickListener layoutClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.img1:
+                    Log.i("Image pressed:", "first");
+//                        changeSelectedLayout(1);
+                    break;
+
+                case R.id.img2:
+                    Log.i("Image pressed:", "second");
+//                        changeSelectedLayout(2);
+                    break;
+
+                case R.id.img3:
+                    Log.i("Image pressed:", "third");
+//                        changeSelectedLayout(3);
+                    break;
+            }
+        }
+    };
 
     private void setSlider(){
         int visibilityRad = getCurrentIntSetting("visibilityRad");
