@@ -37,7 +37,6 @@ public class SettingsActivity extends AppCompatActivity {
         setSwitchesListeners();
         setSliderListener();
         setLayoutListeners();
-        //Night mode as another layout that you can select in the HorizontalScrollView of layouts
         //Function to check which layout is selected at the moment and set the img_clicked on the right layout
         //Visibility radius
     }
@@ -231,18 +230,21 @@ public class SettingsActivity extends AppCompatActivity {
                     Log.i("Image pressed:", "first");
 //                        changeSelectedLayout(1);
                     updateUserSettings("overlay", 1);
+                    setSelectedLayout();
                     break;
 
                 case R.id.img2:
                     Log.i("Image pressed:", "second");
 //                        changeSelectedLayout(2);
                     updateUserSettings("overlay", 2);
+                    setSelectedLayout();
                     break;
 
                 case R.id.img3:
                     Log.i("Image pressed:", "third");
 //                        changeSelectedLayout(3);
                     updateUserSettings("overlay", 3);
+                    setSelectedLayout();
                     break;
             }
         }
@@ -255,6 +257,8 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void setSelectedLayout(){
+        setImageViewsToDefault();
+
         int overlayID = getCurrentIntSetting("overlay");
         String imageID = "img" + overlayID;
         int resID = getResources().getIdentifier(imageID, "id", getPackageName());
@@ -263,6 +267,15 @@ public class SettingsActivity extends AppCompatActivity {
         String imageIDclicked = "img" + overlayID + "small_clicked";
         int resIDclicked = getResources().getIdentifier(imageIDclicked, "drawable", getPackageName());
         img.setImageResource(resIDclicked);
+    }
+
+    private void setImageViewsToDefault(){
+        ImageView img1= (ImageView) findViewById(R.id.img1);
+        img1.setImageResource(R.drawable.img1small);
+        ImageView img2= (ImageView) findViewById(R.id.img2);
+        img2.setImageResource(R.drawable.img2small);
+        ImageView img3= (ImageView) findViewById(R.id.img3);
+        img3.setImageResource(R.drawable.img3small);
     }
 
     private boolean getCurrentBoolSetting(String settingType) {
@@ -278,6 +291,8 @@ public class SettingsActivity extends AppCompatActivity {
         cursor.moveToFirst();
         if (cursor.moveToFirst()) {
             boolean setting = Boolean.parseBoolean(cursor.getString(settingIndex));
+            cursor.close();
+            userData.close();
             return setting;
         }
         cursor.close();
@@ -298,7 +313,10 @@ public class SettingsActivity extends AppCompatActivity {
 
         cursor.moveToFirst();
         if (cursor.moveToFirst()) {
-            return Integer.parseInt(cursor.getString(settingIndex));
+            int intValue = Integer.parseInt(cursor.getString(settingIndex));
+            cursor.close();
+            userData.close();
+            return intValue;
         }
         cursor.close();
         userData.close();
