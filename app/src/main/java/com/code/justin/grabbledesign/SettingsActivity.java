@@ -67,7 +67,6 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Log.v("NightMode Switch State=", ""+isChecked);
-                //Set user nightMode parameter to isChecked
                 updateUserSettings("nightMode", getBinary(isChecked));
             }
         });
@@ -128,37 +127,37 @@ public class SettingsActivity extends AppCompatActivity {
             ContentValues newObject = new ContentValues();
             newObject.put("id", cursorId);
 
-            if (setting == "nightMode"){
+            if (setting.equalsIgnoreCase("nightMode")){
                 newObject.put("nightMode", newValue);
             }else{
                 newObject.put("nightMode", cursorNightMode);
             }
 
-            if (setting == "powerSaving"){
+            if (setting.equalsIgnoreCase("powerSaving")){
                 newObject.put("powerSaving", newValue);
             }else{
                 newObject.put("powerSaving", cursorPowerSaving);
             }
 
-            if (setting == "autoCollect"){
+            if (setting.equalsIgnoreCase("autoCollect")){
                 newObject.put("autoCollect", newValue);
             }else{
                 newObject.put("autoCollect", cursorAutoCollect);
             }
 
-            if (setting == "superLetter"){
+            if (setting.equalsIgnoreCase("superLetter")){
                 newObject.put("superLetter", newValue);
             }else{
                 newObject.put("superLetter", cursorSuperLetter);
             }
 
-            if (setting == "visibilityRad"){
+            if (setting.equalsIgnoreCase("visibilityRad")){
                 newObject.put("visibilityRad", newValue);
             }else{
                 newObject.put("visibilityRad", cursorVisibilityRad);
             }
 
-            if (setting == "overlay"){
+            if (setting.equalsIgnoreCase("overlay")){
                 newObject.put("overlay", newValue);
             }else{
                 newObject.put("overlay", cursorOverlay);
@@ -299,8 +298,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         cursor.moveToFirst();
         if (cursor.moveToFirst()) {
-            int setting = Integer.parseInt(cursor.getString(settingIndex));
-            return setting;
+            return Integer.parseInt(cursor.getString(settingIndex));
         }
         cursor.close();
         userData.close();
