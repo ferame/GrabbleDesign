@@ -1,6 +1,5 @@
 package com.code.justin.grabbledesign;
 
-import android.*;
 import android.Manifest;
 import android.content.ContentValues;
 import android.content.Context;
@@ -89,9 +88,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         try {
             // Customise the styling of the base map using a JSON object defined
             // in a raw resource file.
+            String style = getSelectedStyle();
+            Log.i("STYLE MAPS", style);
+            Resources res = this.getResources();
+            int styleID = res.getIdentifier(style, "raw", this.getPackageName());
             boolean success = mMap.setMapStyle(
                     MapStyleOptions.loadRawResourceStyle(
-                            this, R.raw.style_json));
+                            this, styleID));
             if (!success) {
                 Log.e("MapsActivityRaw", "Style parsing failed.");
             }
@@ -101,12 +104,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         setMarkerClickListener(mMap);
 
-        //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-//        Log.d("starting", "setMyLocationEnabled");
-//        if (Build.VERSION.SDK_INT < 23) {
-//            mMap.setMyLocationEnabled(true);
-//        }
-//        Log.d("finishing", "setMyLocationEnabled");
         DownloadTask task = new DownloadTask();
         KmlLayer returnedLayer = null;
         try {
@@ -526,6 +523,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SharedPreferences mPrefs = getSharedPreferences("date", 0);
         SharedPreferences.Editor mEditor = mPrefs.edit();
         mEditor.putString("date", getDate()).commit();
+    }
+
+    private String getSelectedStyle(){
+        String style;
+        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
+        userData.execSQL("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, nightMode boolean, powerSaving boolean, autoCollect boolean, superLetter boolean, visibilityRad INTEGER, overlay INTEGER)");
+
+        String selectString = "SELECT * FROM settings WHERE " + "id" + " =?";
+        Cursor cursor = userData.rawQuery(selectString, new String[]{Integer.toString(player)});
+
+        int nightModeIndex = cursor.getColumnIndex("nightMode");
+        int overlayIndex = cursor.getColumnIndex("overlay");
+
+        if (cursor.moveToFirst()) {
+            cursor.moveToFirst();
+            String nightMode = cursor.getString(nightModeIndex);
+            if (nightMode.equalsIgnoreCase("1")){
+                style = "nightmode_json";
+            }else{
+                int overlay = Integer.parseInt(cursor.getString(overlayIndex));
+                style = "style" + overlay + "_json";
+            }
+        } else {
+            Log.e("Style Selection", "crashed");
+            style = "null";
+        }
+        cursor.close();
+        userData.close();
+        return style;
     }
 
     public Action getIndexApiAction() {

@@ -43,6 +43,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void setBooleanOptions(){
         Switch nightModeSwitch = (Switch) findViewById(R.id.nightMode);
+        Log.i("NightMode",Boolean.toString(getCurrentBoolSetting("nightMode")));
         nightModeSwitch.setChecked(getCurrentBoolSetting("nightMode"));
 
         Switch powerSavingSwitch = (Switch) findViewById(R.id.powerSaving);
@@ -290,7 +291,16 @@ public class SettingsActivity extends AppCompatActivity {
 
         cursor.moveToFirst();
         if (cursor.moveToFirst()) {
-            boolean setting = Boolean.parseBoolean(cursor.getString(settingIndex));
+            boolean setting;
+            Log.i("Did", "getCurrentBoolSetting");
+            Log.i(settingType, cursor.getString(settingIndex));
+            if (cursor.getString(settingIndex).equalsIgnoreCase("1")){
+                setting = true;
+                Log.i("setting", "1");
+            }else {
+                setting = false;
+                Log.i("setting", "0");
+            }
             cursor.close();
             userData.close();
             return setting;
