@@ -232,8 +232,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         Double pointLat = Double.parseDouble(toMod.split("\\(")[1].split(",")[0]);
                         Double pointLng = Double.parseDouble(toMod.split(",")[1].split("\\)")[0]);
 
-                        //Add check of if the marker was pressed before or not, if not - act normal, if yes - change the colour of the marker and make sure the collected is set to true
-
                         Marker newMarker = mMap.addMarker(
                                 new MarkerOptions()
                                         .position(new LatLng(pointLat,pointLng))
@@ -518,8 +516,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.i("letter", cursor.getString(cursor.getColumnIndex("letter")));
             String markerLetter = cursor.getString(cursor.getColumnIndex("letter"));
 
-            Log.i("collected", cursor.getString(cursor.getColumnIndex("collected")));
-            String markerCollected = cursor.getString(cursor.getColumnIndex("collected"));
+//            Log.i("collected", cursor.getString(cursor.getColumnIndex("collected")));
+//            String markerCollected = cursor.getString(cursor.getColumnIndex("collected"));
 
             pressedBefore = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex("collected")));
 
@@ -533,7 +531,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 newPlacemarkObject.put("superLetter", markerSuperLetter);
                 newPlacemarkObject.put("letter", markerLetter);
                 newPlacemarkObject.put("collected", "true");
-//                Log.i("newObject", newPlacemarkObject.toString());
 
                 userData.update(tableName, newPlacemarkObject, "placemarkID='"+markerPlacemarkID + "'", null);
             } else {
@@ -584,7 +581,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public boolean onMarkerClick(Marker marker) {
                 markerInProximityOrClicked(marker);
-                //String tag = marker.getTag();
                 return true;
             }
         });

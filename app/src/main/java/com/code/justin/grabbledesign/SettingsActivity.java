@@ -37,8 +37,6 @@ public class SettingsActivity extends AppCompatActivity {
         setSwitchesListeners();
         setSliderListener();
         setLayoutListeners();
-        //Function to check which layout is selected at the moment and set the img_clicked on the right layout
-        //Visibility radius
     }
 
     private void setBooleanOptions(){

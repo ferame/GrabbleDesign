@@ -63,7 +63,7 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
 
     String dictionary;
 
-    Map<Character, Object> letterValues = new HashMap<Character, Object>();
+    Map<Character, Object> letterValues = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +77,6 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
         populateLettersParam();
         Log.i("Populate", "Ends");
 
-//        Button[] buttons = new Button[28];
         Integer i = 0;
         for (char alphabet = 'A'; alphabet <= 'Z'; alphabet++) {
             String buttonID = alphabet + "letter";
@@ -99,8 +98,7 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
         buttons[28].setOnClickListener(this);
 
         Log.i("Button Count info", "Starts");
-        setLetterButtonCountsWITHLETTERSCORES();
-//        WITHLETTERSCORES
+        setLetterButtonCountsWithLetterScores();
 //        setLetterButtonCounts();
         Log.i("Button Count info", "Ends");
 
@@ -251,15 +249,6 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
         return -1;
     }
 
-    private int getLetterIndex(char letter) {
-        for (int i = 0; i < 26; i++) {
-            if (lettersParam[i].getLetter() == letter) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     private void populateLettersParam() {
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
         String tableName = "inventory";
@@ -291,6 +280,7 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
         userData.close();
     }
 
+//    Method that works if you want to display the count of letters instead of letter amounts
 //    private void setLetterButtonCounts() {
 //        for (int i = 0; i < 26; i++) {
 //            Character letter = lettersParam[i].getLetter();
@@ -305,7 +295,7 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
 //        }
 //    }
 
-    private void setLetterButtonCountsWITHLETTERSCORES() {
+    private void setLetterButtonCountsWithLetterScores() {
         for (int i = 0; i < 26; i++) {
             Character letter = lettersParam[i].getLetter();
             Integer count = lettersParam[i].getCount();
@@ -388,18 +378,18 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
             buttons[letterIndex].setBackgroundResource(R.drawable.keyboard_button_border_disabled);
         }
     }
-//  WITHLETTERSCORES
-    private void updateLetterCountIndex(Integer letterIndex) {
-        Character letter = lettersParam[letterIndex].getLetter();
-        Integer count = lettersParam[letterIndex].getCount();
-
-        String toShow = letter + count.toString();
-        SpannableStringBuilder showSpan = new SpannableStringBuilder(toShow);
-        showSpan.setSpan(new SuperscriptSpan(), 1, showSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        showSpan.setSpan(new RelativeSizeSpan(0.7f), 1, showSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        buttons[letterIndex].setText(showSpan);
-    }
+//    Method that works if you want to display the count of letters instead of letter amounts
+//    private void updateLetterCountIndex(Integer letterIndex) {
+//        Character letter = lettersParam[letterIndex].getLetter();
+//        Integer count = lettersParam[letterIndex].getCount();
+//
+//        String toShow = letter + count.toString();
+//        SpannableStringBuilder showSpan = new SpannableStringBuilder(toShow);
+//        showSpan.setSpan(new SuperscriptSpan(), 1, showSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//        showSpan.setSpan(new RelativeSizeSpan(0.7f), 1, showSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//
+//        buttons[letterIndex].setText(showSpan);
+//    }
 
     private void backspaceAction() {
         TextView textInput = (TextView) findViewById(R.id.textViewInput);
@@ -410,7 +400,6 @@ public class WordInputActivity extends AppCompatActivity implements View.OnClick
             Log.i("got position " + letterIndex.toString(), "for" + lastLetter);
             increaseLetterCount(letterIndex);
             updateLetterButtonColour(letterIndex);
-//            WITHLETTERSCORES
 //            updateLetterCountIndex(letterIndex);
             textInput.setText(removeLastLetter(startText));
         } else {
