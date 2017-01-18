@@ -23,6 +23,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 
+import com.google.android.gms.common.api.BooleanResult;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.maps.android.kml.KmlLayer;
 import com.google.maps.android.kml.KmlPlacemark;
@@ -48,6 +49,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -62,7 +64,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleApiClient client;
 
     private ArrayList<Marker> allMarkers = new ArrayList<>();
-    private ArrayList<Marker> usedMarkers = new ArrayList<>();
 
     private int player;
 
@@ -84,7 +85,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         Log.d("onMapReady", "starts");
         mMap = googleMap;
-//        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         try {
             // Customise the styling of the base map using a JSON object defined
             // in a raw resource file.
@@ -105,12 +105,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setMarkerClickListener(mMap);
 
         DownloadTask task = new DownloadTask();
-        KmlLayer returnedLayer = null;
         try {
             Log.i(TAG,"load the layer of markers");
             String dayOfWeek = new SimpleDateFormat("EEEE").format(new Date());
             task.execute("http://www.inf.ed.ac.uk/teaching/courses/selp/coursework/" + dayOfWeek.toLowerCase() + ".kml");
-            //usedMarkers = new int[];
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -183,7 +181,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         protected KmlLayer doInBackground(String... urls) {
             Log.i(TAG,"doInBackground");
-            String result = "";
             URL url;
             HttpURLConnection urlConnection = null;
 
@@ -205,7 +202,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
 
-        //Need fix for latlng
         @Override
         protected void onPostExecute(KmlLayer kmlLayer) {
             Log.i(TAG,"onPostExecute");
@@ -250,7 +246,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String selectStringPlacemark = "SELECT * FROM " + tableName + " WHERE " + "id" + " =?";
 
         Cursor c = userData.rawQuery(selectStringPlacemark, new String[] {Integer.toString(player)});
-        //Cursor c = userData.rawQuery(selectStringPlacemark, null);
         int placemarkIdIndex = c.getColumnIndex("placemarkID");
         int pointLatIndex = c.getColumnIndex("pointLat");
         int pointLngIndex = c.getColumnIndex("pointLng");
@@ -275,7 +270,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             newMarker.setTag(placemarkId);
 
-            if (collected.equalsIgnoreCase("true")){
+            if (collected.equalsIgnoreCase("true")) {
                 newMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
             }
 
@@ -326,7 +321,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void findNearbyLetters(Location userLocation) {
         Log.i(TAG, "findNearbyLetters");
-
+        boolean superLetterEnabled = isSuperLetterSettingOn("superLetter");
+        String superLetterId = "";
+        if (superLetterEnabled) {
+            superLetterId = getSuperLetterId().replaceAll("\\D+","");
+        }
         if(letterLayer != null){
             Log.i(TAG,"gets letterLayer");
             if (letterLayer.getPlacemarks() != null){
@@ -335,7 +334,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Location pointLoc = new Location("LetterLoc");
                     pointLoc.setLongitude(point.getPosition().longitude);
                     pointLoc.setLatitude(point.getPosition().latitude);
-                    if (userLocation.distanceTo(pointLoc) < 50){
+                    if (userLocation.distanceTo(pointLoc) < 500){
+                        if (point.getTag().toString().replaceAll("\\D+","").equalsIgnoreCase(superLetterId)){
+                            Log.i("found letter", "which is super");
+                            if (superLetterEnabled){
+                                Log.i("in settings the", "superletter was enabled");
+                                Log.i("the superletter was", superLetterId);
+                                Log.i("the point was", point.getTag().toString().replaceAll("\\D+",""));
+                                if (point.getTag().toString().replaceAll("\\D+","").equalsIgnoreCase(superLetterId)){
+                                    Log.i("and even", "point matched");
+                                    if (wasPressedPreviously(superLetterId)){
+                                        point.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+                                    } else {
+                                        point.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
+                                    }
+                                }
+                            }
+                            else {
+                                if (wasPressedPreviously(superLetterId)){
+                                    point.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+                                } else {
+                                    point.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                                }
+                            }
+                        }
                         point.setVisible(true);
                     }else{
                         point.setVisible(false);
@@ -345,29 +367,100 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    //Need fix for latlng
     private void createPlacemarkDB(KmlLayer kmlLayer){
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
         userData.execSQL("CREATE TABLE IF NOT EXISTS placemarks (id INTEGER, placemarkID VARCHAR(20), pointLat REAL, pointLng REAL, superLetter boolean, letter VARCHAR(1), collected boolean, PRIMARY KEY(id, placemarkID))");
-
+        int superLetterIs = generateRandomNum(1,1001);
         userData.execSQL("DELETE FROM placemarks");
         letterLayer = kmlLayer;
         for (KmlPlacemark point : kmlLayer.getPlacemarks()) {
             String pointLetter = point.getProperty("description");
             String pointID = point.getProperty("name");
+            Log.i("pointID is:", pointID);
             String toMod = point.getGeometry().toString();
             Double pointLat = Double.parseDouble(toMod.split("\\(")[1].split(",")[0]);
             Double pointLng = Double.parseDouble(toMod.split(",")[1].split("\\)")[0]);
-            userData.execSQL("INSERT INTO placemarks (id, placemarkID, pointLat, pointLng, superLetter, letter, collected) VALUES ('" + Integer.toString(player) + "', '" + pointID + "', '" + pointLat + "', '" + pointLng + "', '" + "false" + "', '" + pointLetter + "', '" + "false" + "')");
+            if (pointID.replaceAll("\\D+","").equalsIgnoreCase(Integer.toString(superLetterIs))) {
+                userData.execSQL("INSERT INTO placemarks (id, placemarkID, pointLat, pointLng, superLetter, letter, collected) VALUES ('" + Integer.toString(player) + "', '" + pointID + "', '" + pointLat + "', '" + pointLng + "', '" + "true" + "', '" + pointLetter + "', '" + "false" + "')");
+            } else {
+                userData.execSQL("INSERT INTO placemarks (id, placemarkID, pointLat, pointLng, superLetter, letter, collected) VALUES ('" + Integer.toString(player) + "', '" + pointID + "', '" + pointLat + "', '" + pointLng + "', '" + "false" + "', '" + pointLetter + "', '" + "false" + "')");
+            }
         }
         userData.close();
     }
 
+    private boolean isSuperLetterSettingOn(String settingType){
+        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
+        userData.execSQL("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, nightMode boolean, powerSaving boolean, autoCollect boolean, superLetter boolean, visibilityRad INTEGER, overlay INTEGER)");
 
-    //Edited for latlng
+        String selectString = "SELECT * FROM settings WHERE " + "id" + " =?";
+        Cursor cursor = userData.rawQuery(selectString, new String[]{Integer.toString(player)});
+
+        int settingIndex = cursor.getColumnIndex(settingType);
+
+        cursor.moveToFirst();
+        if (cursor.moveToFirst()) {
+            boolean setting;
+            Log.i("Did", "getCurrentBoolSetting");
+            Log.i(settingType, cursor.getString(settingIndex));
+            if (cursor.getString(settingIndex).equalsIgnoreCase("1")){
+                setting = true;
+                Log.i("setting", "1");
+            }else {
+                setting = false;
+                Log.i("setting", "0");
+            }
+            cursor.close();
+            userData.close();
+            return setting;
+        }
+        cursor.close();
+        userData.close();
+
+        return false;
+    }
+
+    private String getSuperLetterId(){
+        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
+        String tableName = "placemarks";
+        String selectStringPlacemark = "SELECT * FROM " + tableName + " WHERE " + "id" + " =?"+ " AND " + "superLetter" + "=?";
+
+        String superLetterId = "null";
+
+        Cursor cursor = userData.rawQuery(selectStringPlacemark, new String[] {Integer.toString(player), "true"});
+
+        if(cursor.moveToFirst()){
+            cursor.moveToFirst();
+            superLetterId = cursor.getString(cursor.getColumnIndex("placemarkID"));
+        }
+        return superLetterId;
+    }
+
+    private boolean wasPressedPreviously(String letterId){
+        letterId = "Point " + letterId;
+        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
+        String tableName = "placemarks";
+        String selectStringPlacemark = "SELECT * FROM " + tableName + " WHERE " + "id" + " =?"+ " AND " + "placemarkID" + "=?";
+
+        Cursor cursor = userData.rawQuery(selectStringPlacemark, new String[] {Integer.toString(player), letterId});
+
+        Boolean pressedBefore = false;
+
+        if(cursor.moveToFirst()){
+            pressedBefore = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex("collected")));
+        }
+        return pressedBefore;
+    }
+
+    private int generateRandomNum(int low, int high){
+        Random r = new Random();
+        int result = r.nextInt(high-low) + low;
+        return result;
+    }
+
     private boolean wasPressed(String tag, String letter){
-        Log.i("MarkerPress", "letter:" + letter);
-        Log.i("MarkerPress", "placeID:" + tag);
+        Log.i("MarkerPress letter:", letter);
+        Log.i("MarkerPress placeID:", tag);
 
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
         String tableName = "placemarks";
@@ -431,7 +524,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                Log.i("Marker Clicked", "");
                 String placemarkID = marker.getId();
                 String letter = marker.getTitle();
                 String tag = (String) marker.getTag();
@@ -443,12 +535,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Boolean markerPressed = wasPressed(tag, letter);
                 if (!markerPressed){
                     addToInventory(letter);
+                    Log.i("onClick", "MARKER PRESSED");
+                    Log.i("onClick marker tag", tag.replaceAll("\\D+",""));
+                    Log.i("onClick superLetter tag", getSuperLetterId().replaceAll("\\D+",""));
+                    Log.i("onClick comparison", String.valueOf(getSuperLetterId().replaceAll("\\D+","").equalsIgnoreCase(tag.replaceAll("\\D+",""))));
+                    if (isSuperLetterSettingOn("superLetter")) {
+                        String superLetterId = getSuperLetterId().replaceAll("\\D+","");
+                        if (superLetterId.equalsIgnoreCase(tag.replaceAll("\\D+",""))){
+                            String randomLetter1 = generateRandomLetter();
+                            Log.i("LETTER GENER", randomLetter1);
+                            addToInventory(randomLetter1);
+                            String randomLetter2 = generateRandomLetter();
+                            Log.i("LETTER GENER", randomLetter2);
+                            addToInventory(randomLetter2);
+                        }
+                    }
                 }
                 marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
                 //String tag = marker.getTag();
                 return true;
             }
         });
+    }
+
+    private String generateRandomLetter(){
+        Random r = new Random();
+        char c = (char) (r.nextInt(26) + 'a');
+        return Character.toString(c).toUpperCase();
     }
 
     private void addToInventory(String letter){

@@ -38,7 +38,7 @@
             android:orientation="vertical">
 
             <Switch
-                android:text="Map Night Mode Disabled"
+                android:text="Map Night Mode"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_alignParentTop="true"
