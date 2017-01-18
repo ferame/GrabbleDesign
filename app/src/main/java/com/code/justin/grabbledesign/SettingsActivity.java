@@ -343,4 +343,10 @@ public class SettingsActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void logout(View view) {
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
 }

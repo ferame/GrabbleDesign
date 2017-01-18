@@ -115,6 +115,7 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
             intent.putExtra("userId", Integer.toString(id));
             startActivity(intent);
+            finish();
         }else{
             Toast.makeText(getApplicationContext(), "Wrong Email or Password", Toast.LENGTH_LONG).show();
         }

@@ -98,6 +98,12 @@
                 android:layout_height="48dp"
                 android:id="@+id/goToChangePassActivity"
                 android:onClick="toChangePassActivity" />
+            <Button
+                android:text="Logout"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:id="@+id/logout"
+                android:onClick="logout" />
         </LinearLayout>
     </ScrollView>
     <HorizontalScrollView
