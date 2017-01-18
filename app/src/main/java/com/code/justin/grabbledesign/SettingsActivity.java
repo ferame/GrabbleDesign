@@ -229,21 +229,18 @@ public class SettingsActivity extends AppCompatActivity {
             switch (v.getId()) {
                 case R.id.img1:
                     Log.i("Image pressed:", "first");
-//                        changeSelectedLayout(1);
                     updateUserSettings("overlay", 1);
                     setSelectedLayout();
                     break;
 
                 case R.id.img2:
                     Log.i("Image pressed:", "second");
-//                        changeSelectedLayout(2);
                     updateUserSettings("overlay", 2);
                     setSelectedLayout();
                     break;
 
                 case R.id.img3:
                     Log.i("Image pressed:", "third");
-//                        changeSelectedLayout(3);
                     updateUserSettings("overlay", 3);
                     setSelectedLayout();
                     break;

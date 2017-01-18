@@ -142,7 +142,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         };
 
         if (Build.VERSION.SDK_INT < 23) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            if(getCurrentBoolSetting("powerSaving")) {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 8000, 0, locationListener);
+            } else {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            }
 
             Log.i("Button to center", "start");
             mMap.setMyLocationEnabled(true);
@@ -160,7 +164,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
             } else {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                if(getCurrentBoolSetting("powerSaving")) {
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 8000, 0, locationListener);
+                } else {
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                }
 
                 Log.i("Button to center", "start");
                 mMap.setMyLocationEnabled(true);
@@ -695,6 +703,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         userData.close();
         Log.i("getSetDistance", "failed");
         return -1;
+    }
+
+    private boolean getCurrentBoolSetting(String settingType) {
+
+        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
+        userData.execSQL("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, nightMode boolean, powerSaving boolean, autoCollect boolean, superLetter boolean, visibilityRad INTEGER, overlay INTEGER)");
+
+        String selectString = "SELECT * FROM settings WHERE " + "id" + " =?";
+        Cursor cursor = userData.rawQuery(selectString, new String[]{Integer.toString(player)});
+
+        int settingIndex = cursor.getColumnIndex(settingType);
+
+        cursor.moveToFirst();
+        if (cursor.moveToFirst()) {
+            boolean setting;
+            Log.i(settingType, cursor.getString(settingIndex));
+            if (cursor.getString(settingIndex).equalsIgnoreCase("1")){
+                setting = true;
+            }else {
+                setting = false;
+            }
+            cursor.close();
+            userData.close();
+            return setting;
+        }
+        cursor.close();
+        userData.close();
+
+        return false;
     }
 
     public Action getIndexApiAction() {
