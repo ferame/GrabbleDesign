@@ -183,8 +183,8 @@ public class SettingsActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 // TODO Auto-generated method stub
                 int position = seekBar.getProgress();
-                Log.i("Visibility radius", Integer.toString(position));
-                updateUserSettings("visibilityRad", position);
+                Log.i("Visibility radius", Integer.toString(position+20));
+                updateUserSettings("visibilityRad", position+20);
             }
 
             @Override
@@ -195,7 +195,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Auto-generated method stub
-                showToast("Visibility radius set to " + String.valueOf(progress) + "m");
+                showToast("Visibility radius set to " + String.valueOf(progress+20) + "m");
                 //Log.i("Visibility radius", String.valueOf(progress)+"m");
             }
         });

@@ -88,7 +88,7 @@
                     android:id="@+id/radiusSlider"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:max="70"
+                    android:max="80"
                     android:progress="10"
                     android:layout_weight="1"/>
             </LinearLayout>

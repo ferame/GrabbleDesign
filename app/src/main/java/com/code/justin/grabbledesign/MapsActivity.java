@@ -320,6 +320,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     public void findNearbyLetters(Location userLocation) {
+        int setDistance = getSetDistance();
+
         Log.i(TAG, "findNearbyLetters");
         boolean superLetterEnabled = isSuperLetterSettingOn("superLetter");
         String superLetterId = "";
@@ -334,7 +336,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Location pointLoc = new Location("LetterLoc");
                     pointLoc.setLongitude(point.getPosition().longitude);
                     pointLoc.setLatitude(point.getPosition().latitude);
-                    if (userLocation.distanceTo(pointLoc) < 500){
+                    if (userLocation.distanceTo(pointLoc) < setDistance){
                         if (point.getTag().toString().replaceAll("\\D+","").equalsIgnoreCase(superLetterId)){
                             Log.i("found letter", "which is super");
                             if (superLetterEnabled){
@@ -433,6 +435,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             cursor.moveToFirst();
             superLetterId = cursor.getString(cursor.getColumnIndex("placemarkID"));
         }
+        cursor.close();
+        userData.close();
         return superLetterId;
     }
 
@@ -449,6 +453,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if(cursor.moveToFirst()){
             pressedBefore = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex("collected")));
         }
+
+        cursor.close();
+        userData.close();
         return pressedBefore;
     }
 
@@ -665,6 +672,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         cursor.close();
         userData.close();
         return style;
+    }
+
+    private int getSetDistance(){
+        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
+        userData.execSQL("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, nightMode boolean, powerSaving boolean, autoCollect boolean, superLetter boolean, visibilityRad INTEGER, overlay INTEGER)");
+
+        String selectString = "SELECT * FROM settings WHERE " + "id" + " =?";
+        Cursor cursor = userData.rawQuery(selectString, new String[]{Integer.toString(player)});
+
+        int settingIndex = cursor.getColumnIndex("visibilityRad");
+
+        cursor.moveToFirst();
+        if (cursor.moveToFirst()) {
+            int intValue = Integer.parseInt(cursor.getString(settingIndex));
+            cursor.close();
+            userData.close();
+            Log.i("getSetDistance", "succeeded");
+            return intValue;
+        }
+        cursor.close();
+        userData.close();
+        Log.i("getSetDistance", "failed");
+        return -1;
     }
 
     public Action getIndexApiAction() {
