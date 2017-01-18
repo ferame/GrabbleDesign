@@ -143,8 +143,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         if (Build.VERSION.SDK_INT < 23) {
             if(getCurrentBoolSetting("powerSaving")) {
+                Log.i("PowerSaving", "ENABLED");
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 8000, 0, locationListener);
             } else {
+                Log.i("PowerSaving", "FALSE");
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
             }
 
@@ -160,13 +162,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         } else {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
             } else {
                 if(getCurrentBoolSetting("powerSaving")) {
+                    Log.i("PowerSaving", "ENABLED");
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 8000, 0, locationListener);
                 } else {
+                    Log.i("PowerSaving", "FALSE");
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
                 }
 
@@ -331,11 +334,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         int setDistance = getSetDistance();
 
         Log.i(TAG, "findNearbyLetters");
-        boolean superLetterEnabled = isSuperLetterSettingOn("superLetter");
+
+        boolean superLetterEnabled = isBooleanSettingOn("superLetter");
         String superLetterId = "";
         if (superLetterEnabled) {
             superLetterId = getSuperLetterId().replaceAll("\\D+","");
         }
+
+        boolean autoCollectEnabled = isBooleanSettingOn("autoCollect");
+
         if(letterLayer != null){
             Log.i(TAG,"gets letterLayer");
             if (letterLayer.getPlacemarks() != null){
@@ -344,6 +351,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Location pointLoc = new Location("LetterLoc");
                     pointLoc.setLongitude(point.getPosition().longitude);
                     pointLoc.setLatitude(point.getPosition().latitude);
+
                     if (userLocation.distanceTo(pointLoc) < setDistance){
                         if (point.getTag().toString().replaceAll("\\D+","").equalsIgnoreCase(superLetterId)){
                             Log.i("found letter", "which is super");
@@ -369,6 +377,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             }
                         }
                         point.setVisible(true);
+                        if (autoCollectEnabled){
+                            if (userLocation.distanceTo(pointLoc) <= 10){
+                                markerInProximityOrClicked(point);
+                            }
+                        }
                     }else{
                         point.setVisible(false);
                     }
@@ -399,7 +412,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         userData.close();
     }
 
-    private boolean isSuperLetterSettingOn(String settingType){
+    private boolean isBooleanSettingOn(String settingType){
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
         userData.execSQL("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, nightMode boolean, powerSaving boolean, autoCollect boolean, superLetter boolean, visibilityRad INTEGER, overlay INTEGER)");
 
@@ -534,39 +547,43 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return pressedBefore;
     }
 
+    private void markerInProximityOrClicked(Marker marker){
+        String placemarkID = marker.getId();
+        String letter = marker.getTitle();
+        String tag = (String) marker.getTag();
+        Log.i("Marker id is", placemarkID);
+        Log.i("Marker title is", letter);
+        Log.i("Marker tag is", tag);
+
+        //Making DB check if the marker was pressed before, if true - pressed before or marker not found in DB, if false - the press was first
+        Boolean markerPressed = wasPressed(tag, letter);
+        if (!markerPressed){
+            addToInventory(letter);
+            Log.i("onClick", "MARKER PRESSED");
+            Log.i("onClick marker tag", tag.replaceAll("\\D+",""));
+            Log.i("onClick superLetter tag", getSuperLetterId().replaceAll("\\D+",""));
+            Log.i("onClick comparison", String.valueOf(getSuperLetterId().replaceAll("\\D+","").equalsIgnoreCase(tag.replaceAll("\\D+",""))));
+            if (isBooleanSettingOn("superLetter")) {
+                String superLetterId = getSuperLetterId().replaceAll("\\D+","");
+                if (superLetterId.equalsIgnoreCase(tag.replaceAll("\\D+",""))){
+                    String randomLetter1 = generateRandomLetter();
+                    Log.i("LETTER GENER", randomLetter1);
+                    addToInventory(randomLetter1);
+                    String randomLetter2 = generateRandomLetter();
+                    Log.i("LETTER GENER", randomLetter2);
+                    addToInventory(randomLetter2);
+                }
+            }
+        }
+        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+    }
+
 
     private void setMarkerClickListener(GoogleMap map) {
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                String placemarkID = marker.getId();
-                String letter = marker.getTitle();
-                String tag = (String) marker.getTag();
-                Log.i("Marker id is", placemarkID);
-                Log.i("Marker title is", letter);
-                Log.i("Marker tag is", tag);
-
-                //Making DB check if the marker was pressed before, if true - pressed before or marker not found in DB, if false - the press was first
-                Boolean markerPressed = wasPressed(tag, letter);
-                if (!markerPressed){
-                    addToInventory(letter);
-                    Log.i("onClick", "MARKER PRESSED");
-                    Log.i("onClick marker tag", tag.replaceAll("\\D+",""));
-                    Log.i("onClick superLetter tag", getSuperLetterId().replaceAll("\\D+",""));
-                    Log.i("onClick comparison", String.valueOf(getSuperLetterId().replaceAll("\\D+","").equalsIgnoreCase(tag.replaceAll("\\D+",""))));
-                    if (isSuperLetterSettingOn("superLetter")) {
-                        String superLetterId = getSuperLetterId().replaceAll("\\D+","");
-                        if (superLetterId.equalsIgnoreCase(tag.replaceAll("\\D+",""))){
-                            String randomLetter1 = generateRandomLetter();
-                            Log.i("LETTER GENER", randomLetter1);
-                            addToInventory(randomLetter1);
-                            String randomLetter2 = generateRandomLetter();
-                            Log.i("LETTER GENER", randomLetter2);
-                            addToInventory(randomLetter2);
-                        }
-                    }
-                }
-                marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+                markerInProximityOrClicked(marker);
                 //String tag = marker.getTag();
                 return true;
             }
