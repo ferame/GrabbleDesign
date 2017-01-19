@@ -48,7 +48,8 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/inventoryVals"
         android:layout_alignParentStart="true"
-        android:id="@+id/inventoryListView"/>
+        android:id="@+id/inventoryListView"
+        android:layout_above="@+id/inventoryDONE" />
     <Button
         android:id="@+id/inventoryDONE"
         android:onClick="toMapsActivity"

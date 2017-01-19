@@ -121,7 +121,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onLocationChanged(Location location) {
                 Log.i(TAG, "onLocationChanged");
                 findNearbyLetters(location);
-                //centerMapOnLocation(location, "Your Location");
             }
 
             @Override
