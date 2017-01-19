@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,9 +56,10 @@ public class CreateAccActivity extends AppCompatActivity {
 
     private boolean createAcc(String nicknameInput, String emailInput, String passwordInput){
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
-        userData.execSQL("CREATE TABLE IF NOT EXISTS accounts (nickname VARCHAR(20), email VARCHAR(20), password VARCHAR(20), id INTEGER PRIMARY KEY)");
+        userData.execSQL("CREATE TABLE IF NOT EXISTS accounts (nickname VARCHAR(20), email TEXT, password TEXT, id INTEGER PRIMARY KEY)");
         if (checkInputs(nicknameInput, emailInput, passwordInput)){
-            userData.execSQL("INSERT INTO accounts (nickname, email, password) VALUES ('" + nicknameInput + "', '" +  emailInput + "', '" + passwordInput +"')");
+            String encryptedPass = helperFunctions.md5(passwordInput);
+            userData.execSQL("INSERT INTO accounts (nickname, email, password) VALUES ('" + nicknameInput + "', '" +  emailInput + "', '" + encryptedPass +"')");
             createUserInventoryTable(findUserId(nicknameInput));
             createUserSettingsTable(findUserId(nicknameInput));
             Log.i("user creation", "done, should be.");
@@ -108,14 +111,14 @@ public class CreateAccActivity extends AppCompatActivity {
 
     public boolean checkEmail(String emailInput){
         if (isEmailic(emailInput)){
-            if (emailInput.length() > 0 && emailInput.length() <= 20) {
+            if (emailInput.length() > 0 && emailInput.length() <= 30) {
                 if (!checkIsDataAlreadyInDB("accounts", "email", emailInput)){
                     return true;
                 }
                 return false;
             } else {
                 Context context = getApplicationContext();
-                Toast lengthToast = Toast.makeText(context, "Email can be at most 20 characters long. (For now)", Toast.LENGTH_LONG);
+                Toast lengthToast = Toast.makeText(context, "Email can be at most 30 characters long. (For now)", Toast.LENGTH_LONG);
                 lengthToast.show();
                 return false;
             }

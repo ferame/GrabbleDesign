@@ -60,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
         //Database Initialisation
         try{
             SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
-            userData.execSQL("CREATE TABLE IF NOT EXISTS accounts (nickname VARCHAR(20), email VARCHAR(20), password VARCHAR(20), id INTEGER PRIMARY KEY)");
+            userData.execSQL("CREATE TABLE IF NOT EXISTS accounts (nickname VARCHAR(20), email TEXT, password TEXT, id INTEGER PRIMARY KEY)");
             //userData.execSQL("DELETE FROM accounts");
             //userData.execSQL("INSERT INTO accounts (nickname, email, password) VALUES ('ferame', 'alisauskas.j@gmail.com', 'somepass')");
             //userData.execSQL("INSERT INTO accounts (nickname, email, password) VALUES ('darakan', 'justinas.ali@zebra.lt', 'somepass2')");
@@ -105,9 +105,10 @@ public class LoginActivity extends AppCompatActivity {
         EditText passwordInput = (EditText)findViewById(R.id.password);
         String password = passwordInput.getText().toString();
         Log.i("Got password", password);
+        String encryptedPassword = helperFunctions.md5(password);
 
         //Check if this exists in database
-        boolean AllowEntrance = hasObject("accounts", emailNickname, password);
+        boolean AllowEntrance = hasObject("accounts", emailNickname, encryptedPassword);
 
         if (AllowEntrance){
             int id = tryingToAccess.getId();

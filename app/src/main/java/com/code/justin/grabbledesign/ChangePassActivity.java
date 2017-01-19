@@ -36,7 +36,8 @@ public class ChangePassActivity extends AppCompatActivity {
             } else if (pass.length() == 0){
                 Toast.makeText(getApplicationContext(), "Password field is empty", Toast.LENGTH_LONG).show();
             } else {
-                setNewPass(pass);
+                String encryptedPass = helperFunctions.md5(pass);
+                setNewPass(encryptedPass);
                 Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
                 intent.putExtra("userId", Integer.toString(player));
                 startActivity(intent);
@@ -61,8 +62,8 @@ public class ChangePassActivity extends AppCompatActivity {
             Log.i("email", cursor.getString(cursor.getColumnIndex("email")));
             String email = cursor.getString(cursor.getColumnIndex("email"));
 
-            Log.i("password", cursor.getString(cursor.getColumnIndex("password")));
-            String password = cursor.getString(cursor.getColumnIndex("password"));
+//            Log.i("password", cursor.getString(cursor.getColumnIndex("password")));
+//            String password = cursor.getString(cursor.getColumnIndex("password"));
 
             Log.i("id", cursor.getString(cursor.getColumnIndex("id")));
             String id = cursor.getString(cursor.getColumnIndex("id"));
