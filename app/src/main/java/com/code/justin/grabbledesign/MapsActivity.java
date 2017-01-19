@@ -306,8 +306,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     {
-
-                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                        if(getCurrentBoolSetting("powerSaving")) {
+                            Log.i("PowerSaving", "ENABLED");
+                            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 8000, 0, locationListener);
+                        } else {
+                            Log.i("PowerSaving", "FALSE");
+                            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                        }
                         Log.i("Button to center", "start");
                         mMap.setMyLocationEnabled(true);
                         Log.i("Button to center", "end");
