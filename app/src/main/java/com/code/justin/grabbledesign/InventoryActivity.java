@@ -15,6 +15,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 // some guidance https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
 public class InventoryActivity extends AppCompatActivity {
 
@@ -76,6 +80,42 @@ public class InventoryActivity extends AppCompatActivity {
         }
     }
 
+    class Word{
+
+        private String word;
+        private int value;
+
+        public Word(String newWord, int newValue){
+            this.word = newWord;
+            this.value = newValue;
+        }
+
+        public String getWord() {
+            return word;
+        }
+        public void setWord(String newWord) {
+            this.word = newWord;
+        }
+        public int getValue() {
+            return value;
+        }
+        public void setValue(int newValue) {
+            this.value = newValue;
+        }
+    }
+
+    class MyWordsComp implements Comparator<Word> {
+
+        @Override
+        public int compare(Word word1, Word word2) {
+            if(word1.getValue() < word2.getValue()){
+                return 1;
+            } else {
+                return -1;
+            }
+        }
+    }
+
     private void populateArray(LinesAdapter adapter){
         adapter.clear();
 
@@ -86,20 +126,22 @@ public class InventoryActivity extends AppCompatActivity {
         int wordIndex = c.getColumnIndex("word");
         int valueIndex = c.getColumnIndex("value");
 
+        List<Word> allWords = new ArrayList<>();
+
         c.moveToFirst();
         if(c.moveToFirst()) {
             do {
-//                Log.i("id", c.getString(idIndex));
                 String word = c.getString(wordIndex);
-                String value = c.getString(valueIndex);
-
-//                Log.i("word", c.getString(wordIndex));
-//                Log.i("value", c.getString(valueIndex));
-
-                OneLine line = new OneLine(word, value);
-                adapter.add(line);
-
+                int value = Integer.parseInt(c.getString(valueIndex));
+                allWords.add(new Word(word, value));
             } while (c.moveToNext());
+        }
+
+        Collections.sort(allWords, new MyWordsComp());
+
+        for (Word word:allWords){
+            OneLine line = new OneLine(word.getWord(), Integer.toString(word.getValue()));
+            adapter.add(line);
         }
         userData.close();
         c.close();

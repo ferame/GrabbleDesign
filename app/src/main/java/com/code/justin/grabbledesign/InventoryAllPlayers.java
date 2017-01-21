@@ -16,7 +16,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -80,11 +82,47 @@ public class InventoryAllPlayers extends AppCompatActivity {
         }
     }
 
+    class PlayerWord{
+        private String nickname;
+        private int value;
+
+        public PlayerWord(String newName, int newValue){
+            this.nickname = newName;
+            this.value = newValue;
+        }
+
+        public String getNickname() {
+            return nickname;
+        }
+        public int getValue(){
+            return value;
+        }
+        public void setNickname(String newNickname) {
+            this.nickname = newNickname;
+        }
+        public void setValue(int newValue){
+            this.value = newValue;
+        }
+    }
+
+    class MyAllPlayersWordsComp implements Comparator<PlayerWord> {
+
+        @Override
+        public int compare(PlayerWord word1, PlayerWord word2) {
+            if(word1.getValue() < word2.getValue()){
+                return 1;
+            } else {
+                return -1;
+            }
+        }
+    }
+
     private void populateArray(InventoryAllPlayers.LinesAdapter adapter){
         adapter.clear();
 
         HashMap<String,String> users = getUserHashMap();
-        TreeMap<Integer,String> allPlayers = new TreeMap<>(Collections.reverseOrder());
+        List<PlayerWord> allPlayersWords = new ArrayList<>();
+
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
         userData.execSQL("CREATE TABLE IF NOT EXISTS usedwords (id INTEGER, word VARCHAR(7), value INTEGER, PRIMARY KEY(id,word))");
 
@@ -103,14 +141,15 @@ public class InventoryAllPlayers extends AppCompatActivity {
 //                Log.i("value", c.getString(valueIndex));
 
                 String user = users.get(id);
-                allPlayers.put(Integer.parseInt(value),user);
+                allPlayersWords.add(new PlayerWord(user,Integer.parseInt(value)));
 
             } while (c.moveToNext());
         }
-        for(Map.Entry<Integer,String> entry : allPlayers.entrySet()) {
-            Integer key = entry.getKey();
-            String value = entry.getValue();
-            InventoryAllPlayers.OneLine line = new InventoryAllPlayers.OneLine(value, key.toString());
+
+        Collections.sort(allPlayersWords, new MyAllPlayersWordsComp());
+
+        for (PlayerWord word:allPlayersWords){
+            InventoryAllPlayers.OneLine line = new InventoryAllPlayers.OneLine(word.getNickname(), Integer.toString(word.getValue()));
             adapter.add(line);
         }
         c.close();
