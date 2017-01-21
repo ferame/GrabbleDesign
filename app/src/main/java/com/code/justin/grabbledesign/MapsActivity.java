@@ -217,7 +217,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.i(TAG,"onPostExecute");
             super.onPostExecute(kmlLayer);
             //Log.i("Date check", checkDate().toString());
-            if (checkDate()){
+            if (checkDate() && markerMapExists()){
                 letterLayer = kmlLayer;
                 buildMarkerMap();
             } else {
@@ -247,6 +247,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    private boolean markerMapExists(){
+        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
+        String tableName = "placemarks";
+        String selectStringPlacemark = "SELECT * FROM " + tableName + " WHERE " + "id" + " =?";
+
+        Cursor c = userData.rawQuery(selectStringPlacemark, new String[] {Integer.toString(player)});
+        if (!c.moveToFirst()){
+            return false;
+        }else {
+            return true;
+        }
+    }
+
     private void buildMarkerMap(){
         Log.i("buildMarkerMap", "started");
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
@@ -260,35 +273,40 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         int superLetterIndex = c.getColumnIndex("superLetter");
         int letterIndex = c.getColumnIndex("letter");
         int collectedIndex = c.getColumnIndex("collected");
-        c.moveToFirst();
+//        c.moveToFirst();
         Integer count = 1;
-        while (c != null){
-            String placemarkId = c.getString(placemarkIdIndex);
-            Double pointLat = Double.parseDouble(c.getString(pointLatIndex));
-            Double pointLng = Double.parseDouble(c.getString(pointLngIndex));
-            String superLetter = c.getString(superLetterIndex);
-            String letter = c.getString(letterIndex);
-            String collected = c.getString(collectedIndex);
+        if (c.moveToFirst()){
+            do {
+//        while (c != null){
+                String placemarkId = c.getString(placemarkIdIndex);
+                Double pointLat = Double.parseDouble(c.getString(pointLatIndex));
+                Double pointLng = Double.parseDouble(c.getString(pointLngIndex));
+                String superLetter = c.getString(superLetterIndex);
+                String letter = c.getString(letterIndex);
+                String collected = c.getString(collectedIndex);
 
-            Marker newMarker = mMap.addMarker(
-                    new MarkerOptions()
-                            .position(new LatLng(pointLat,pointLng))
-                            .title(letter)
-                            .visible(false));
+                Marker newMarker = mMap.addMarker(
+                        new MarkerOptions()
+                                .position(new LatLng(pointLat, pointLng))
+                                .title(letter)
+                                .visible(false));
 
-            newMarker.setTag(placemarkId);
+                newMarker.setTag(placemarkId);
 
-            if (collected.equalsIgnoreCase("true")) {
-                newMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-            }
+                if (collected.equalsIgnoreCase("true")) {
+                    newMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+                }
 
-            allMarkers.add(newMarker);
-            count++;
-            if (count != 1000) {
-                c.moveToNext();
-            } else {
-                break;
-            }
+                allMarkers.add(newMarker);
+//                count++;
+//                if (count != 1000) {
+//                    c.moveToNext();
+//                } else {
+//                    break;
+//                }
+            } while (c.moveToNext());
+        }else {
+            Log.i("Caught bug", "Here");
         }
         c.close();
         userData.close();

@@ -15,8 +15,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-// some guidance https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
-public class InventoryActivity extends AppCompatActivity {
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+
+public class InventoryAllPlayers extends AppCompatActivity {
 
     private int player;
 
@@ -31,14 +35,14 @@ public class InventoryActivity extends AppCompatActivity {
     }
 
     // Construct the data source
-    ArrayList<OneLine> arrayOfoneLines = new ArrayList<>();
+    ArrayList<InventoryAllPlayers.OneLine> arrayOfoneLines = new ArrayList<>();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.i("ACITVITY", "InventoryActivity");
+        Log.i("ACITVITY", "InventoryAllPlayers");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_inventory);
+        setContentView(R.layout.activity_inventory_all_players);
 
         Intent intent = getIntent();
         player = Integer.parseInt(intent.getStringExtra("userId"));
@@ -52,15 +56,15 @@ public class InventoryActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
     }
 
-    public class LinesAdapter extends ArrayAdapter<OneLine> {
-        public LinesAdapter(Context context, ArrayList<OneLine> users) {
+    public class LinesAdapter extends ArrayAdapter<InventoryAllPlayers.OneLine> {
+        public LinesAdapter(Context context, ArrayList<InventoryAllPlayers.OneLine> users) {
             super(context, 0, users);
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             // Get the data item for this position
-            OneLine line = getItem(position);
+            InventoryAllPlayers.OneLine line = getItem(position);
             // Check if an existing view is being reused, otherwise inflate the view
             if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.inventory_one_line, parent, false);
@@ -76,33 +80,63 @@ public class InventoryActivity extends AppCompatActivity {
         }
     }
 
-    private void populateArray(LinesAdapter adapter){
+    private void populateArray(InventoryAllPlayers.LinesAdapter adapter){
         adapter.clear();
 
+        HashMap<String,String> users = getUserHashMap();
+        TreeMap<Integer,String> allPlayers = new TreeMap<>(Collections.reverseOrder());
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
         userData.execSQL("CREATE TABLE IF NOT EXISTS usedwords (id INTEGER, word VARCHAR(7), value INTEGER, PRIMARY KEY(id,word))");
 
-        Cursor c = userData.rawQuery("SELECT * FROM usedwords WHERE id = " + Integer.toString(player), null);
-        int wordIndex = c.getColumnIndex("word");
+        Cursor c = userData.rawQuery("SELECT * FROM usedwords", null);
+        int idIndex = c.getColumnIndex("id");
         int valueIndex = c.getColumnIndex("value");
 
         c.moveToFirst();
         if(c.moveToFirst()) {
             do {
 //                Log.i("id", c.getString(idIndex));
-                String word = c.getString(wordIndex);
+                String id = c.getString(idIndex);
                 String value = c.getString(valueIndex);
 
-//                Log.i("word", c.getString(wordIndex));
+//                Log.i("id", c.getString(idIndex));
 //                Log.i("value", c.getString(valueIndex));
 
-                OneLine line = new OneLine(word, value);
-                adapter.add(line);
+                String user = users.get(id);
+                allPlayers.put(Integer.parseInt(value),user);
 
+            } while (c.moveToNext());
+        }
+        for(Map.Entry<Integer,String> entry : allPlayers.entrySet()) {
+            Integer key = entry.getKey();
+            String value = entry.getValue();
+            InventoryAllPlayers.OneLine line = new InventoryAllPlayers.OneLine(value, key.toString());
+            adapter.add(line);
+        }
+        c.close();
+        userData.close();
+    }
+
+    private HashMap<String,String> getUserHashMap(){
+        HashMap<String, String> users = new HashMap<>();
+        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
+        userData.execSQL("CREATE TABLE IF NOT EXISTS accounts (nickname VARCHAR(20), email TEXT, password TEXT, id INTEGER PRIMARY KEY)");
+
+        Cursor c = userData.rawQuery("SELECT * FROM accounts", null);
+        int idIndex = c.getColumnIndex("id");
+        int nicknameIndex = c.getColumnIndex("nickname");
+
+        c.moveToFirst();
+        if(c.moveToFirst()) {
+            do {
+                String id = c.getString(idIndex);
+                String nickname = c.getString(nicknameIndex);
+                users.put(id, nickname);
             } while (c.moveToNext());
         }
         userData.close();
         c.close();
+        return users;
     }
 
     public void toMapsActivity(View view){
@@ -112,8 +146,8 @@ public class InventoryActivity extends AppCompatActivity {
         finish();
     }
 
-    public void toInventoryAllPlayers(View view){
-        Intent intent = new Intent(getApplicationContext(), InventoryAllPlayers.class);
+    public void toInventoryActivity(View view){
+        Intent intent = new Intent(getApplicationContext(), InventoryActivity.class);
         intent.putExtra("userId", Integer.toString(player));
         startActivity(intent);
         finish();

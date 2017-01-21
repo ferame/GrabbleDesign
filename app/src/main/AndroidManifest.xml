@@ -55,7 +55,9 @@
         <activity android:name=".SettingsActivity" />
         <activity android:name=".InventoryActivity" />
         <!-- <activity android:name=".LoginActivity"></activity> -->
-        <activity android:name=".CreateAccActivity"></activity>
+        <activity android:name=".CreateAccActivity" />
+        <activity android:name=".InventoryAllPlayers" />
+        <activity android:name=".InventorySumScores"></activity>
     </application>
 
 </manifest>
