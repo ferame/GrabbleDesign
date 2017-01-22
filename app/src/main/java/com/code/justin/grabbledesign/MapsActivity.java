@@ -414,7 +414,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
         userData.execSQL("CREATE TABLE IF NOT EXISTS placemarks (id INTEGER, placemarkID VARCHAR(20), pointLat REAL, pointLng REAL, superLetter boolean, letter VARCHAR(1), collected boolean, PRIMARY KEY(id, placemarkID))");
         int superLetterIs = generateRandomNum(1,1001);
-        userData.execSQL("DELETE FROM placemarks");
+        userData.execSQL("DELETE FROM placemarks WHERE id = '" + Integer.toString(player) + "'");
         letterLayer = kmlLayer;
         for (KmlPlacemark point : kmlLayer.getPlacemarks()) {
             String pointLetter = point.getProperty("description");
@@ -553,7 +553,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 newPlacemarkObject.put("letter", markerLetter);
                 newPlacemarkObject.put("collected", "true");
 
-                userData.update(tableName, newPlacemarkObject, "placemarkID='"+markerPlacemarkID + "'", null);
+                userData.update(tableName, newPlacemarkObject, "placemarkID='"+markerPlacemarkID + "' AND id='" + Integer.toString(player) + "'", null);
             } else {
                 Log.i("ANNOUNCEMENT", "Was pressed before");
             }
