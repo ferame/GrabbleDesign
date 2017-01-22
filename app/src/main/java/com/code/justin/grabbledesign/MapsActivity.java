@@ -419,7 +419,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for (KmlPlacemark point : kmlLayer.getPlacemarks()) {
             String pointLetter = point.getProperty("description");
             String pointID = point.getProperty("name");
-            Log.i("pointID is:", pointID);
             String toMod = point.getGeometry().toString();
             Double pointLat = Double.parseDouble(toMod.split("\\(")[1].split(",")[0]);
             Double pointLng = Double.parseDouble(toMod.split(",")[1].split("\\)")[0]);

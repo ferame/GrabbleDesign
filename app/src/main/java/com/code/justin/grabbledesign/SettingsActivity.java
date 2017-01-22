@@ -333,12 +333,14 @@ public class SettingsActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), ChangePassActivity.class);
         intent.putExtra("userId", Integer.toString(player));
         startActivity(intent);
+        finish();
     }
 
     public void toMapsActivity(View view) {
         Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
         intent.putExtra("userId", Integer.toString(player));
         startActivity(intent);
+        finish();
     }
 
     public void logout(View view) {

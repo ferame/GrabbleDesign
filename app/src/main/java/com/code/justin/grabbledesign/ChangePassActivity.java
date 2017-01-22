@@ -30,7 +30,7 @@ public class ChangePassActivity extends AppCompatActivity {
         String passRepeat = passwordInput.getText().toString();
         Log.i("Got passRepeat", passRepeat);
 
-        if (pass.equals(passRepeat)){
+        if (passwordsMatch(pass, passRepeat)){
             if (pass.length() > 20){
                 Toast.makeText(getApplicationContext(), "Password can be up to 20 characters long", Toast.LENGTH_LONG).show();
             } else if (pass.length() == 0){
@@ -45,6 +45,10 @@ public class ChangePassActivity extends AppCompatActivity {
         } else {
             Toast.makeText(getApplicationContext(), "Passwords do not match", Toast.LENGTH_LONG).show();
         }
+    }
+
+    public static boolean passwordsMatch(String pass, String passRepeat) {
+        return !(pass == null || passRepeat == null) && pass.equals(passRepeat);
     }
 
     private void setNewPass(String newPassword){

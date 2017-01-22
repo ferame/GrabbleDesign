@@ -89,72 +89,103 @@ public class CreateAccActivity extends AppCompatActivity {
     }
 
     public boolean checkNickname(String nicknameInput){
-        if (isAlphaNumeric(nicknameInput)){
-            if (nicknameInput.length() > 0 && nicknameInput.length() <= 20) {
-                if (!checkIsDataAlreadyInDB("accounts", "nickname", nicknameInput)){
-                    return true;
-                }
-                return false;
-            } else {
+        if (isNicknamic(nicknameInput)){
+            if (!checkIsDataAlreadyInDB("accounts", "nickname", nicknameInput)){
+                return true;
+            }else {
                 Context context = getApplicationContext();
-                Toast lengthToast = Toast.makeText(context, "Nickname can be at most 20 characters long.", Toast.LENGTH_LONG);
+                Toast lengthToast = Toast.makeText(context, "Nickname is already in use", Toast.LENGTH_LONG);
                 lengthToast.show();
                 return false;
             }
         }else{
-            Context context = getApplicationContext();
-            Toast charTypeToast = Toast.makeText(context, "Nickname can contain only letters and numbers", Toast.LENGTH_LONG);
-            charTypeToast.show();
-            return false;
+            if (nicknameInput.length() > 0 && nicknameInput.length() <= 20) {
+                Context context = getApplicationContext();
+                Toast lengthToast = Toast.makeText(context, "Nickname can be at most 20 characters long.", Toast.LENGTH_LONG);
+                lengthToast.show();
+                return false;
+            } else if (nicknameInput.isEmpty()) {
+                Context context = getApplicationContext();
+                Toast lengthToast = Toast.makeText(context, "Nickname has to be at least 1 character long.", Toast.LENGTH_LONG);
+                lengthToast.show();
+                return false;
+            } else {
+                    Context context = getApplicationContext();
+                    Toast charTypeToast = Toast.makeText(context, "Nickname can contain only letters and numbers", Toast.LENGTH_LONG);
+                    charTypeToast.show();
+                    return false;
+            }
         }
     }
 
     public boolean checkEmail(String emailInput){
         if (isEmailic(emailInput)){
-            if (emailInput.length() > 0 && emailInput.length() <= 30) {
-                if (!checkIsDataAlreadyInDB("accounts", "email", emailInput)){
-                    return true;
-                }
-                return false;
-            } else {
+            if (!checkIsDataAlreadyInDB("accounts", "email", emailInput)){
+                return true;
+            }else {
                 Context context = getApplicationContext();
-                Toast lengthToast = Toast.makeText(context, "Email can be at most 30 characters long. (For now)", Toast.LENGTH_LONG);
+                Toast lengthToast = Toast.makeText(context, "Email is already in use", Toast.LENGTH_LONG);
                 lengthToast.show();
                 return false;
             }
         }else{
             Context context = getApplicationContext();
-            Toast charTypeToast = Toast.makeText(context, "Email can contain only letters and numbers", Toast.LENGTH_LONG);
+            Toast charTypeToast = Toast.makeText(context, "That doesn't look like a valid email address", Toast.LENGTH_LONG);
             charTypeToast.show();
             return false;
         }
     }
 
     public boolean checkPassword(String passwordInput){
-        if (passwordInput.length() > 0 && passwordInput.length() <= 20){
+        if (isPasswordic(passwordInput)){
             return true;
-        } else {
-            return false;
+        }else {
+            if (passwordInput.length() > 20) {
+                Context context = getApplicationContext();
+                Toast charTypeToast = Toast.makeText(context, "Password can be at most 20 characters long", Toast.LENGTH_LONG);
+                charTypeToast.show();
+                return false;
+            } else {
+                Context context = getApplicationContext();
+                Toast charTypeToast = Toast.makeText(context, "Password has to be at least 1 character long", Toast.LENGTH_LONG);
+                charTypeToast.show();
+                return false;
+            }
         }
     }
 
-    public boolean isAlphaNumeric(String s){
+    public static boolean isNicknamic(String s){
+        if (s == null || s.isEmpty()){
+            return false;
+        }
+        if (s.length() > 20 ){
+            return false;
+        }
         String pattern= "^[a-zA-Z0-9]*$";
         return s.matches(pattern);
     }
 
-    public boolean isEmailic(String s){
-        boolean isValid = false;
-
+    public static boolean isEmailic(String s){
+        if (s == null){
+            return false;
+        }
         String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
         CharSequence inputStr = s;
 
         Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(inputStr);
         if (matcher.matches()) {
-            isValid = true;
+            return true;
         }
-        return isValid;
+        return false;
+    }
+
+    public static boolean isPasswordic(String s){
+        if (s != null && s.length() > 0 && s.length() <= 20 && !s.isEmpty()){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean checkIsDataAlreadyInDB(String TableName, String dbfield, String fieldValue) {
