@@ -433,7 +433,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private boolean isBooleanSettingOn(String settingType){
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
-        userData.execSQL("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, nightMode boolean, powerSaving boolean, autoCollect boolean, superLetter boolean, visibilityRad INTEGER, overlay INTEGER)");
+        userData.execSQL("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, nightMode boolean, powerSaving boolean, autoCollect boolean, superLetter boolean, visibilityRad INTEGER, overlay INTEGER, lastUse varchar(20))");
 
         String selectString = "SELECT * FROM settings WHERE " + "id" + " =?";
         Cursor cursor = userData.rawQuery(selectString, new String[]{Integer.toString(player)});
@@ -676,21 +676,69 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private String getLastDate(){
-        SharedPreferences mPrefs = getSharedPreferences("date", 0);
-        String lastDate = mPrefs.getString("date", "None");
-        return lastDate;
+        //CHANGE TO VERSION WITH DATABASE
+        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
+        String selectString = "SELECT * FROM settings WHERE " + "id" + " =?";
+        Cursor cursor = userData.rawQuery(selectString, new String[]{Integer.toString(player)});
+        int settingIndex = cursor.getColumnIndex("lastUse");
+
+        cursor.moveToFirst();
+        if (cursor.moveToFirst()) {
+            String date;
+            Log.i("getLastDate", "Succeeded");
+            Log.i("lastUse", cursor.getString(settingIndex));
+            date = cursor.getString(settingIndex);
+            cursor.close();
+            userData.close();
+            return date;
+        } else {
+            Log.i("Did", "getCurrentBoolSetting");
+            cursor.close();
+            userData.close();
+            return "8888-88-88";
+        }
     }
 
     private void setDate(){
-        SharedPreferences mPrefs = getSharedPreferences("date", 0);
-        SharedPreferences.Editor mEditor = mPrefs.edit();
-        mEditor.putString("date", getDate()).commit();
+        SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
+        String tableName = "settings";
+        String selectStringLetter = "SELECT * FROM " + tableName + " WHERE " + "id" + " =?";
+
+        Cursor cursor = userData.rawQuery(selectStringLetter, new String[] {Integer.toString(player)});
+
+        if(cursor.moveToFirst()){
+            cursor.moveToFirst();
+            String cursorId = cursor.getString(cursor.getColumnIndex("id"));
+            String cursorNightMode = cursor.getString(cursor.getColumnIndex("nightMode"));
+            String cursorPowerSaving = cursor.getString(cursor.getColumnIndex("powerSaving"));
+            String cursorAutoCollect = cursor.getString(cursor.getColumnIndex("autoCollect"));
+            String cursorSuperLetter = cursor.getString(cursor.getColumnIndex("superLetter"));
+            String cursorVisibilityRad = cursor.getString(cursor.getColumnIndex("visibilityRad"));
+            String cursorOverlay = cursor.getString(cursor.getColumnIndex("overlay"));
+//            String cursorLastUse = cursor.getString(cursor.getColumnIndex("lastUse"));
+
+            ContentValues newObject = new ContentValues();
+            newObject.put("id", cursorId);
+            newObject.put("nightMode", cursorNightMode);
+            newObject.put("powerSaving", cursorPowerSaving);
+            newObject.put("autoCollect", cursorAutoCollect);
+            newObject.put("superLetter", cursorSuperLetter);
+            newObject.put("visibilityRad", cursorVisibilityRad);
+            newObject.put("overlay", cursorOverlay);
+            newObject.put("lastUse", getDate());
+            Log.i("newObject", newObject.toString());
+            userData.update(tableName, newObject, "id = '" + cursorId + "'", null);
+        } else {
+            Log.i("Error!!!", "setDate failed");
+        }
+        cursor.close();
+        userData.close();
     }
 
     private String getSelectedStyle(){
         String style;
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
-        userData.execSQL("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, nightMode boolean, powerSaving boolean, autoCollect boolean, superLetter boolean, visibilityRad INTEGER, overlay INTEGER)");
+        userData.execSQL("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, nightMode boolean, powerSaving boolean, autoCollect boolean, superLetter boolean, visibilityRad INTEGER, overlay INTEGER, lastUse varchar(20))");
 
         String selectString = "SELECT * FROM settings WHERE " + "id" + " =?";
         Cursor cursor = userData.rawQuery(selectString, new String[]{Integer.toString(player)});
@@ -718,7 +766,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private int getSetDistance(){
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
-        userData.execSQL("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, nightMode boolean, powerSaving boolean, autoCollect boolean, superLetter boolean, visibilityRad INTEGER, overlay INTEGER)");
+        userData.execSQL("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, nightMode boolean, powerSaving boolean, autoCollect boolean, superLetter boolean, visibilityRad INTEGER, overlay INTEGER, lastUse varchar(20))");
 
         String selectString = "SELECT * FROM settings WHERE " + "id" + " =?";
         Cursor cursor = userData.rawQuery(selectString, new String[]{Integer.toString(player)});
@@ -742,7 +790,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean getCurrentBoolSetting(String settingType) {
 
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
-        userData.execSQL("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, nightMode boolean, powerSaving boolean, autoCollect boolean, superLetter boolean, visibilityRad INTEGER, overlay INTEGER)");
+        userData.execSQL("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, nightMode boolean, powerSaving boolean, autoCollect boolean, superLetter boolean, visibilityRad INTEGER, overlay INTEGER, lastUse varchar(20))");
 
         String selectString = "SELECT * FROM settings WHERE " + "id" + " =?";
         Cursor cursor = userData.rawQuery(selectString, new String[]{Integer.toString(player)});

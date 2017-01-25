@@ -162,6 +162,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
 
             newObject.put("lastUse", cursorLastUse);
+
             Log.i("newObject", newObject.toString());
 
             userData.update(tableName, newObject, "id = '" + cursorId + "'", null);
@@ -277,7 +278,7 @@ public class SettingsActivity extends AppCompatActivity {
     private boolean getCurrentBoolSetting(String settingType) {
 
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
-        userData.execSQL("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, nightMode boolean, powerSaving boolean, autoCollect boolean, superLetter boolean, visibilityRad INTEGER, overlay INTEGER)");
+        userData.execSQL("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, nightMode boolean, powerSaving boolean, autoCollect boolean, superLetter boolean, visibilityRad INTEGER, overlay INTEGER, lastUse varchar(20))");
 
         String selectString = "SELECT * FROM settings WHERE " + "id" + " =?";
         Cursor cursor = userData.rawQuery(selectString, new String[]{Integer.toString(player)});
@@ -309,7 +310,7 @@ public class SettingsActivity extends AppCompatActivity {
     private int getCurrentIntSetting(String settingType) {
 
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
-        userData.execSQL("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, nightMode boolean, powerSaving boolean, autoCollect boolean, superLetter boolean, visibilityRad INTEGER, overlay INTEGER)");
+        userData.execSQL("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, nightMode boolean, powerSaving boolean, autoCollect boolean, superLetter boolean, visibilityRad INTEGER, overlay INTEGER, lastUse varchar(20))");
 
         String selectString = "SELECT * FROM settings WHERE " + "id" + " =?";
         Cursor cursor = userData.rawQuery(selectString, new String[]{Integer.toString(player)});
