@@ -350,4 +350,7 @@ public class SettingsActivity extends AppCompatActivity {
         finish();
     }
 
+    @Override
+    public void onBackPressed() {
+    }
 }

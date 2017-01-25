@@ -167,4 +167,8 @@ public class InventoryActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    @Override
+    public void onBackPressed() {
+    }
 }

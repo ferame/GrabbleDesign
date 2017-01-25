@@ -198,4 +198,8 @@ public class InventoryAllPlayers extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    @Override
+    public void onBackPressed() {
+    }
 }

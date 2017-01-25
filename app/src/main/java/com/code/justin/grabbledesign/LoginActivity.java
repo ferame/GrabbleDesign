@@ -172,4 +172,8 @@ public class LoginActivity extends AppCompatActivity {
         userData.close();              //AND your Database!
         return hasObject;
     }
+
+    @Override
+    public void onBackPressed() {
+    }
 }
