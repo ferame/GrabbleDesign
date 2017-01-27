@@ -2,7 +2,6 @@ package com.code.justin.grabbledesign;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
@@ -12,8 +11,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,9 +38,6 @@ public class CreateAccActivity extends AppCompatActivity {
         String password = passwordInput.getText().toString();
 
         Boolean isSuccessful = createAcc(nickname, email, password);
-
-        //Create last date variable
-        setLastDate();
 
         if (isSuccessful){
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
@@ -216,7 +210,7 @@ public class CreateAccActivity extends AppCompatActivity {
     public void createUserSettingsTable(Integer idInput){
         SQLiteDatabase userData = this.openOrCreateDatabase("userDatabase", MODE_PRIVATE, null);
         userData.execSQL("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, nightMode boolean, powerSaving boolean, autoCollect boolean, superLetter boolean, visibilityRad INTEGER, overlay INTEGER, lastUse varchar(20))");
-        userData.execSQL("INSERT INTO settings (id, nightMode, powerSaving, autoCollect, superLetter, visibilityRad, overlay, lastUse) VALUES (" + idInput + ", " + 0 + ", " + 0 + ", " + 0 + ", " + 0 + ", " + 50 +", " + 1 + ", " + "9999-99-99" + ")");
+        userData.execSQL("INSERT INTO settings (id, nightMode, powerSaving, autoCollect, superLetter, visibilityRad, overlay, lastUse) VALUES (" + idInput + ", " + 0 + ", " + 0 + ", " + 0 + ", " + 1 + ", " + 50 +", " + 1 + ", " + "9999-99-99" + ")");
         userData.close();
     }
 
@@ -232,11 +226,5 @@ public class CreateAccActivity extends AppCompatActivity {
             return id;
         }
         return null;
-    }
-
-    private void setLastDate(){
-        SharedPreferences mPrefs = getSharedPreferences("date", 0);
-        SharedPreferences.Editor mEditor = mPrefs.edit();
-        mEditor.putString("date", "9999-99-99").commit();
     }
 }

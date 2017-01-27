@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.BooleanResult;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -66,6 +67,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ArrayList<Marker> allMarkers = new ArrayList<>();
 
     private int player;
+
+    Toast currentToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -543,6 +546,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             pressedBefore = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex("collected")));
 
             if (!pressedBefore){
+                showToast(letter + " collected");
                 Log.i("ANNOUNCEMENT", "First press of the marker");
                 ContentValues newPlacemarkObject = new ContentValues();
                 newPlacemarkObject.put("id", markerID);
@@ -564,6 +568,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         userData.close();
         return pressedBefore;
     }
+
+    private void showToast(String text)
+    {
+        if(currentToast == null)
+        {
+            currentToast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+        }
+
+        currentToast.setText(text);
+        currentToast.setDuration(Toast.LENGTH_LONG);
+        currentToast.show();
+    }
+
 
     private void markerInProximityOrClicked(Marker marker){
         String placemarkID = marker.getId();
